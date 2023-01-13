@@ -60,37 +60,13 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         rating.text = viewModel.rating
         price.text = viewModel.price
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        /*
-        imageView.frame = CGRect(x: 5,
-                            y: 5,
-                            width: 120,
-                            height: 120)
-        name.frame = CGRect(x: 130,
-                        y: 10,
-                        width: contentView.frame.width-120,
-                        height: 25)
-        
-        rating.frame = CGRect(x: 130,
-                          y: 40,
-                          width: contentView.frame.width-120,
-                          height: 25)
-        price.frame = CGRect(x: 130,
-                         y: 60,
-                         width: contentView.frame.width-120,
-                         height: 35)
-         */
-    }
 }
 
 //MARK: - Helpers
 private extension HomeCollectionViewCell {
-
     func setupView() {
-        
         self.backgroundColor = .white
+        // Snapkit
         addSubview(imageView)
         addSubview(name)
         addSubview(rating)

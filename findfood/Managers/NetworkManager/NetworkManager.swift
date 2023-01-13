@@ -16,8 +16,8 @@ class NetworkManager {
     
     //MARK: Properties
     private let session: URLSession
-    let locationURL = Constant.API.url
-    let headers = [
+    private let locationURL = Constant.API.url
+    private let headers = [
       "accept": "application/json",
       "Authorization": "Bearer " + Constant.API.key
     ]
@@ -36,17 +36,20 @@ class NetworkManager {
                                       timeoutInterval: 10.0)
         request.httpMethod = "GET"
         request.allHTTPHeaderFields = headers
-        let dataTask = session.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
-          if (error != nil) {
-            print(error as Any)
-            return
-          }
-            if let safeData = data {
-                if let location = self.parseJSON(safeData) {
+        
+        let dataTask = session.dataTask(with: request as URLRequest) { [unowned self] data, response, error in
+            
+            if error != nil {
+                print(error?.localizedDescription, #file)
+                return
+            }
+            
+            if let data {
+                if let location = self.parseJSON(data) {
                     self.delegate?.didGetLocation(self, location)
                 }
             }
-        })
+        }
 
         dataTask.resume()
     }
@@ -55,23 +58,18 @@ class NetworkManager {
         let decoder = JSONDecoder()
         var locationArray: [LocationModel] = []
         do {
+
             let decodedData = try decoder.decode(Business.self, from: locationData)
+            
+            // SwiftLint eklenecek
+            
             for business in decodedData.businesses {
-                let id = business.id
-                let name = business.name
-                let categories = business.categories
-                let price = business.price ?? .empty
-                let rating = String(format: "%.1f", business.rating ?? 0.0)
-                let image_url = business.image_url
-                let display_phone = business.display_phone
-                let display_address = business.location.display_address ?? []
-                
-                let location = LocationModel(locationID: id, locationName: name, locationRating: rating, locatinImageLink: image_url, locationPrice: price, locationCategories: categories, display_phone: display_phone, display_address: display_address)
+                let location = LocationModel(with: business)
                 locationArray.append(location)
             }
             return locationArray
-        } catch {
-            print(error)
+        } catch let error {
+            print(error.localizedDescription)
             return []
         }
     }

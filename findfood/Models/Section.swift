@@ -10,12 +10,11 @@ import Foundation
 
 final class Section: Hashable {
     
-    var id = UUID()
     let title : String
     let location : HomeCollectionViewCellViewModel
     
     static func == (lhs: Section, rhs: Section) -> Bool {
-        lhs.id == rhs.id
+        lhs.location.name == rhs.location.name
     }
     
     public init(title: String, location: HomeCollectionViewCellViewModel) {
@@ -24,6 +23,6 @@ final class Section: Hashable {
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+        hasher.combine(location.name)
     }
 }

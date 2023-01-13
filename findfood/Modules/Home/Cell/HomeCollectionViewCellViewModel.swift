@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct HomeCollectionViewCellViewModel: Hashable, Codable {
     let uuid: UUID
     let id: String
@@ -19,6 +18,6 @@ struct HomeCollectionViewCellViewModel: Hashable, Codable {
     let address: [String]
     
     var isLiked: Bool {
-        return false
+        false
     }
 }

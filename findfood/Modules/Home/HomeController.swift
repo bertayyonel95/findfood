@@ -12,39 +12,28 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
         //TODO: Implement
     }
     
+    //MARK: Typealias
     typealias DataSource = UICollectionViewDiffableDataSource<Section, HomeCollectionViewCellViewModel>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>
     
-    private var sections: [Section] = []
+    //MARK: Properties
     private var viewModel: HomeViewModelInput
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
     
-    private lazy var textField: UITextField = {
-        let textField = UITextField(frame: .zero)
-        textField.layoutMargins.right = 20.0
-        textField.backgroundColor = UIColor.init(red: 213.0/255.0, green: 207.0/255.0, blue: 207.0/255.0, alpha: 1)
-        textField.layer.masksToBounds = false
-        textField.placeholder = "Search"
-        textField.textAlignment = .right
-        textField.setRightPaddingPoints(5.0)
-        textField.borderStyle = .roundedRect
-        textField.textContentType = .location
-        textField.autocapitalizationType = .words
-        return textField
+    private lazy var searchBar: UISearchBar = {
+        let searchBar = UISearchBar(frame: .zero)
+        searchBar.searchTextField.placeholder = "Enter a location"
+        searchBar.showsBookmarkButton = true
+        searchBar.setImage(UIImage(systemName: "location.fill"), for: .bookmark, state: .normal)
+        searchBar.delegate = self
+        return searchBar
     }()
-    
-    private lazy var button: UIButton = {
-        let button = UIButton(frame: .zero)
-        button.setBackgroundImage(UIImage(systemName: "magnifyingglass"), for: .normal)
-        button.addTarget(self, action: Selector(("searchClicked")), for: .touchUpInside)
-        button.tintColor = .black
-        return button
-    }()
-    
+
     private lazy var collectionView: UICollectionView = {
         let collectionViewLayout = UICollectionViewFlowLayout()
         collectionViewLayout.scrollDirection = .vertical
+        collectionViewLayout.minimumLineSpacing = 20
         collectionViewLayout.itemSize = CGSize(width: view.frame.size.width, height: view.frame.size.width/3)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: HomeCollectionViewCell.identifier)
@@ -55,12 +44,13 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupView()
         viewModel.viewDidLoad(for: "Istanbul")
         applySnapshot(animatingDifferences: false)
     }
     
-    init(viewModel: HomeViewModelInput){
+    init(viewModel: HomeViewModelInput) {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: .main)
@@ -74,12 +64,12 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
 
 }
 
+//MARK: - Helpers
 private extension HomeController {
-    
     func applySnapshot(animatingDifferences: Bool = true) {
         var snapshot = Snapshot()
-        snapshot.appendSections(sections)
-        sections.forEach{ section in
+        snapshot.appendSections(viewModel.getSections())
+        viewModel.getSections().forEach { section in
             snapshot.appendItems([section.location], toSection: section)
         }
         dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
@@ -104,34 +94,22 @@ private extension HomeController {
     
     func setupView() {
         view.backgroundColor = .white
-        view.addSubview(textField)
-        view.addSubview(button)
+        view.addSubview(searchBar)
         view.addSubview(collectionView)
         
-        textField.setConstraint(
+        searchBar.setConstraint(
             top: view.safeAreaLayoutGuide.topAnchor,
             leading: view.leadingAnchor,
             bottom: collectionView.topAnchor,
-            trailing: button.leadingAnchor,
+            trailing: view.trailingAnchor,
             topConstraint: .zero,
             leadingConstraint: 5.0,
-            trailingConstraint: .zero,
+            trailingConstraint: 5.0,
             height: 50.0
         )
         
-        button.setConstraint(
-            top: view.safeAreaLayoutGuide.topAnchor,
-            leading: textField.trailingAnchor,
-            bottom: collectionView.topAnchor,
-            trailing: view.trailingAnchor,
-            topConstraint: 8.0,
-            trailingConstraint: 5.0,
-            width: 30.0,
-            height: 30.0
-        )
-        
         collectionView.setConstraint(
-            top: textField.bottomAnchor,
+            top: searchBar.bottomAnchor,
             leading: view.leadingAnchor,
             bottom: view.safeAreaLayoutGuide.bottomAnchor,
             trailing: view.trailingAnchor,
@@ -143,19 +121,25 @@ private extension HomeController {
     }
     
     @objc
-    func searchClicked(){
-        viewModel.viewDidLoad(for: textField.text ?? " ")
+    func searchClicked() {
+        viewModel.viewDidLoad(for: searchBar.text ?? " ")
     }
 }
 
+//MARK: - UICollectionViewDelegate
 extension HomeController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let section = sections[indexPath.section]
+        let section = viewModel.getSections()[indexPath.section]
         let cellViewModel = section.location
         
         let detailVC = DetailController(cellViewModel: cellViewModel)
         navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
+
+extension HomeController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        20
     }
 }
 
@@ -166,8 +150,19 @@ extension HomeController: HomeViewModelOutput {
     
     func home(_ viewModel: HomeViewModelInput, sectionDidLoad list: [Section]) {
         DispatchQueue.main.async {
-            self.sections = list
+            viewModel.updateSections(list)
             self.applySnapshot(animatingDifferences: false)
         }
+    }
+}
+
+//MARK: - UISearchBarDelegate
+extension HomeController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchClicked()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.count > 3 { searchClicked() }
     }
 }

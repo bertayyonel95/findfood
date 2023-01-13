@@ -25,3 +25,16 @@ struct LocationModel {
         }
     }
 }
+
+extension LocationModel {
+    init(with locationData: LocationData) {
+        self.locationID = locationData.id
+        self.locationName = locationData.name
+        self.locationRating = String(locationData.rating ?? .zero)
+        self.locatinImageLink = locationData.image_url
+        self.locationPrice = locationData.price ?? ""
+        self.locationCategories = locationData.categories
+        self.display_phone = locationData.display_phone
+        self.display_address = locationData.location.display_address ?? []
+    }
+}
