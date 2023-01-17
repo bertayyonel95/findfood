@@ -29,8 +29,17 @@ class NetworkManager {
         self.session = session
     }
     
+    func requestBusiness(lat: Double, lon: Double) {
+        let urlString = "\(locationURL)latitude=\(lat)&longitude=\(lon)&sort_by=best_match&categories=cafes,seafood,restaurant,pub,coffee,desserts,kebab,bars&limit=35"
+        fetchRequest(urlString: urlString)
+    }
+    
     func requestBusiness(city cityName: String) {
         let urlString = "\(locationURL)location=\(cityName.urlEncoded()!)&sort_by=best_match&categories=cafes,seafood,restaurant,pub,coffee,desserts,kebab,bars&limit=35"
+        fetchRequest(urlString: urlString)
+    }
+    
+    func fetchRequest(urlString: String) {
         let request = NSMutableURLRequest(url: NSURL(string: urlString)! as URL,
                                           cachePolicy: .useProtocolCachePolicy,
                                       timeoutInterval: 10.0)

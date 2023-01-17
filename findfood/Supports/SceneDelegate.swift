@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -15,7 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         let networkManager = NetworkManager(session: .shared)
-        let homeViewModel = HomeViewModel(networkManager: networkManager)
+        let geoLocationManager = GeoLocationManager()
+
+        let homeViewModel = HomeViewModel(networkManager: networkManager, geoLocationManager: geoLocationManager)
         let homeController = HomeController(viewModel: homeViewModel)
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)

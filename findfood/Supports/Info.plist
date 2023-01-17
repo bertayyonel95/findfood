@@ -19,5 +19,9 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>The app requests Always authorization.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>The app requests When in Use or Always authorization.</string>
 </dict>
 </plist>

@@ -19,7 +19,7 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     //MARK: Properties
     private var viewModel: HomeViewModelInput
     private lazy var dataSource = generateDatasource()
-    private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
+    private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>() 
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: .zero)
@@ -46,7 +46,7 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
         super.viewDidLoad()
         
         setupView()
-        viewModel.viewDidLoad(for: "Istanbul")
+        viewModel.getBusinessList(for: "Istanbul")
         applySnapshot(animatingDifferences: false)
     }
     
@@ -61,7 +61,6 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
 }
 
 //MARK: - Helpers
@@ -122,7 +121,7 @@ private extension HomeController {
     
     @objc
     func searchClicked() {
-        viewModel.viewDidLoad(for: searchBar.text ?? " ")
+        viewModel.getBusinessList(for: searchBar.text ?? " ")
     }
 }
 
@@ -164,5 +163,9 @@ extension HomeController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.count > 3 { searchClicked() }
+    }
+    
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.getBusinessList()
     }
 }

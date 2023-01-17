@@ -10,10 +10,12 @@ import Foundation
 protocol HomeViewModelInput {
     var output: HomeViewModelOutput? { get set }
     
-    func viewDidLoad(for location: String)
+    func viewDidLoad()
     func getBusinessList(for location: String)
+    func getBusinessList()
     func getSections() -> [Section]
     func updateSections(_ sections: [Section])
+    func getLocationData()    
 }
 
 protocol HomeViewModelOutput: AnyObject {
@@ -21,26 +23,41 @@ protocol HomeViewModelOutput: AnyObject {
     func home(_ viewModel: HomeViewModelInput, sectionDidLoad list: [Section])
 }
 
-final class HomeViewModel: HomeViewModelInput {
+final class HomeViewModel: HomeViewModelInput  {
     
+    //MARK: Properties
     private var sections: [Section] = []
     private var businessList: [LocationModel] = []
     private var cells: [HomeCollectionViewCellViewModel] = []
     private let networkManager: NetworkManager
+    private let geoLocationManager: GeoLocationManager
+    private var lat: Double = .zero
+    private var lon: Double = .zero
     
     weak var output: HomeViewModelOutput?
+
     
-    init(networkManager: NetworkManager) {
+    init(networkManager: NetworkManager, geoLocationManager: GeoLocationManager) {
         self.networkManager = networkManager
+        self.geoLocationManager = geoLocationManager
         networkManager.delegate = self
+        geoLocationManager.delegate = self
     }
     
-    func viewDidLoad(for location: String) {
-        getBusinessList(for: location)
+    func viewDidLoad() {
+        geoLocationManager.requestAuthorization()
     }
     
     func getBusinessList(for location: String) {
         networkManager.requestBusiness(city: location)
+    }
+    
+    func getBusinessList() {
+        geoLocationManager.requestCurrentLocation()
+    }
+    
+    func getLocationData() {
+        geoLocationManager.requestCurrentLocation()
     }
     
     func getSections() -> [Section] {
@@ -52,6 +69,7 @@ final class HomeViewModel: HomeViewModelInput {
     }
 }
 
+//MARK: - Helpers
 private extension HomeViewModel {
     func generateCellData() {
         var sections: [Section] = []
@@ -83,9 +101,19 @@ private extension HomeViewModel {
     }
 }
 
+//MARK: - NetworkManagerDelegate
 extension HomeViewModel: NetworkManagerDelegate {
     func didGetLocation(_ networkManager: NetworkManager, _ location: [LocationModel]) {
         businessList = location
         self.generateCellData()
     }
 }
+
+extension HomeViewModel: GeoLocationManagerDelegate {
+    func didUpdateLocation(_ geoLocationManager: GeoLocationManager, _ geoLocation: GeoLocationModel) {
+        lat = geoLocation.lat
+        lon = geoLocation.lon
+        networkManager.requestBusiness(lat: lat, lon: lon)
+    }
+}
+

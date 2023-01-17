@@ -21,6 +21,8 @@
 		AB9045E9294760440056C36F /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045E8294760440056C36F /* UIImageView+Extension.swift */; };
 		AB9045EC2948AB940056C36F /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045EB2948AB940056C36F /* LocationData.swift */; };
 		AB9045EE2948AD070056C36F /* LocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045ED2948AD070056C36F /* LocationModel.swift */; };
+		ABB981DA2972B46D008095E3 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB981D92972B46D008095E3 /* LocationManager.swift */; };
+		ABB981DC2972EA62008095E3 /* GeoLocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB981DB2972EA62008095E3 /* GeoLocationModel.swift */; };
 		ABF63F7E29658DCB007447C8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F7D29658DCB007447C8 /* Constants.swift */; };
 		ABF63F8029658E53007447C8 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F7F29658E53007447C8 /* API.swift */; };
 		ABF63F832966F782007447C8 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F822966F782007447C8 /* DetailController.swift */; };
@@ -43,7 +45,9 @@
 		AB9045E8294760440056C36F /* UIImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
 		AB9045EB2948AB940056C36F /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
 		AB9045ED2948AD070056C36F /* LocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModel.swift; sourceTree = "<group>"; };
-		ABF63F7A29658C64007447C8 /* findfood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = findfood.app; path = "/Users/bertayyonel/Documents/dev/projects/findfood/build/Debug-iphoneos/findfood.app"; sourceTree = "<absolute>"; };
+		ABB981D7297154BF008095E3 /* findfood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = findfood.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABB981D92972B46D008095E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		ABB981DB2972EA62008095E3 /* GeoLocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoLocationModel.swift; sourceTree = "<group>"; };
 		ABF63F7D29658DCB007447C8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		ABF63F7F29658E53007447C8 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		ABF63F822966F782007447C8 /* DetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
@@ -65,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				AB9045C329471C5D0056C36F /* findfood */,
+				ABB981D7297154BF008095E3 /* findfood.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,6 +90,7 @@
 		AB9045D82947250D0056C36F /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				ABB981D82972B460008095E3 /* LocationManager */,
 				AB9045D9294725180056C36F /* NetworkManager */,
 			);
 			path = Managers;
@@ -160,9 +166,18 @@
 			children = (
 				AB9045EB2948AB940056C36F /* LocationData.swift */,
 				AB9045ED2948AD070056C36F /* LocationModel.swift */,
+				ABB981DB2972EA62008095E3 /* GeoLocationModel.swift */,
 				AB3D49C929641186006DBE9F /* Section.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		ABB981D82972B460008095E3 /* LocationManager */ = {
+			isa = PBXGroup;
+			children = (
+				ABB981D92972B46D008095E3 /* LocationManager.swift */,
+			);
+			path = LocationManager;
 			sourceTree = "<group>";
 		};
 		ABF63F7B29658DA2007447C8 /* Utilities */ = {
@@ -207,7 +222,7 @@
 			);
 			name = findfood;
 			productName = findfood;
-			productReference = ABF63F7A29658C64007447C8 /* findfood.app */;
+			productReference = ABB981D7297154BF008095E3 /* findfood.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -261,6 +276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB9045E729475C550056C36F /* HomeCollectionViewCell.swift in Sources */,
+				ABB981DA2972B46D008095E3 /* LocationManager.swift in Sources */,
 				AB9045DB2947252B0056C36F /* NetworkManager.swift in Sources */,
 				AB9045E12947433E0056C36F /* UIView+Extensions.swift in Sources */,
 				ABF63F88296839DF007447C8 /* HomeViewModel.swift in Sources */,
@@ -269,6 +285,7 @@
 				AB3D49CA29641186006DBE9F /* Section.swift in Sources */,
 				AB9045C529471C5D0056C36F /* AppDelegate.swift in Sources */,
 				ABF63F7E29658DCB007447C8 /* Constants.swift in Sources */,
+				ABB981DC2972EA62008095E3 /* GeoLocationModel.swift in Sources */,
 				ABF63F8029658E53007447C8 /* API.swift in Sources */,
 				AB9045E5294756EC0056C36F /* HomeCollectionViewCellViewModel.swift in Sources */,
 				AB9045EC2948AB940056C36F /* LocationData.swift in Sources */,

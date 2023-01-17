@@ -14,9 +14,7 @@ protocol HomeCollectionViewCellViewDelegate: AnyObject {
 final class HomeCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "HomeCollectionViewCell"
-    
     private var viewModel: HomeCollectionViewCellViewModel?
-    
     weak var delegate: HomeCollectionViewCellViewDelegate?
     
     private let imageView: UIImageView = {
