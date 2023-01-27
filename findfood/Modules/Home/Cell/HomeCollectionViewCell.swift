@@ -19,7 +19,8 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
-        imageView.contentMode = .scaleToFill
+        imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -64,6 +65,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
 private extension HomeCollectionViewCell {
     func setupView() {
         self.backgroundColor = .white
+        self.clipsToBounds = true
         // Snapkit
         addSubview(imageView)
         addSubview(name)

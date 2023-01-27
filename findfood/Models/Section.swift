@@ -10,15 +10,13 @@ import Foundation
 
 final class Section: Hashable {
     
-    let title : String
     let location : HomeCollectionViewCellViewModel
     
     static func == (lhs: Section, rhs: Section) -> Bool {
         lhs.location.name == rhs.location.name
     }
     
-    public init(title: String, location: HomeCollectionViewCellViewModel) {
-        self.title = title
+    public init(location: HomeCollectionViewCellViewModel) {
         self.location = location
     }
     

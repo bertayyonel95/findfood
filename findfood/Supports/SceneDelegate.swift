@@ -16,9 +16,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         let networkManager = NetworkManager(session: .shared)
+        let cityNameAPI = CityNameAPI(networkManager: networkManager)
+        let coordinateAPI = CoordinateAPI(networkManager: networkManager)
+        
         let geoLocationManager = GeoLocationManager()
 
-        let homeViewModel = HomeViewModel(networkManager: networkManager, geoLocationManager: geoLocationManager)
+        let homeViewModel = HomeViewModel(cityNameAPI: cityNameAPI, coordinateAPI: coordinateAPI, geoLocationManager: geoLocationManager)
         let homeController = HomeController(viewModel: homeViewModel)
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)

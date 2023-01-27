@@ -143,7 +143,7 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
 }
 
 extension HomeController: HomeViewModelOutput {
-    func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [LocationData]) {
+    func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [LocationModel]) {
         //TODO: Implement
     }
     
@@ -162,10 +162,14 @@ extension HomeController: UISearchBarDelegate {
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.count > 3 { searchClicked() }
+        if searchText.count > 3 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                self.searchClicked()
+            }
+        }
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.getBusinessList()
+        viewModel.getLocationData()
     }
 }

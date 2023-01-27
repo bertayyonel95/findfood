@@ -26,6 +26,6 @@ extension UIImageView {
     
     func downloaded(from urlStr: String, contentMode mode: ContentMode = .scaleToFill) {
         guard let url = URL(string: urlStr) else { return }
-        downloaded(from: url, contentMode: mode)
+        downloaded(from: url, contentMode: .scaleAspectFill)
     }
 }

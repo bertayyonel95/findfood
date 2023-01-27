@@ -7,12 +7,12 @@
 
 import Foundation
 
-protocol NetworkManagerDelegate {
-    func didGetLocation(_ networkManager: NetworkManager, _ location: [LocationModel])
+protocol Networking{
+    func request(request: RequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
 }
 
 //MARK: - NetworkManager
-class NetworkManager {
+class NetworkManager: Networking {
     
     //MARK: Properties
     private let session: URLSession
@@ -29,6 +29,23 @@ class NetworkManager {
         self.session = session
     }
     
+    func request(request: RequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
+        
+        guard let generatedRequest = request.generateRequest() else { return }
+        
+        let task = session.dataTask(with: generatedRequest) { data, response, error in
+            if error != nil || data == nil { completion(.failure(.unknownError)) }
+            
+            guard let data = data else { return }
+            
+            if let location = self.parseJSON(data) {
+                completion(.success(location))
+            }
+        }
+        task.resume()
+    }
+    
+    /*
     func requestBusiness(lat: Double, lon: Double) {
         let urlString = "\(locationURL)latitude=\(lat)&longitude=\(lon)&sort_by=best_match&categories=cafes,seafood,restaurant,pub,coffee,desserts,kebab,bars&limit=35"
         fetchRequest(urlString: urlString)
@@ -38,6 +55,7 @@ class NetworkManager {
         let urlString = "\(locationURL)location=\(cityName.urlEncoded()!)&sort_by=best_match&categories=cafes,seafood,restaurant,pub,coffee,desserts,kebab,bars&limit=35"
         fetchRequest(urlString: urlString)
     }
+ 
     
     func fetchRequest(urlString: String) {
         let request = NSMutableURLRequest(url: NSURL(string: urlString)! as URL,
@@ -62,6 +80,7 @@ class NetworkManager {
 
         dataTask.resume()
     }
+     */
     
     func parseJSON(_ locationData: Data) -> [LocationModel]? {
         let decoder = JSONDecoder()
@@ -78,7 +97,7 @@ class NetworkManager {
             }
             return locationArray
         } catch let error {
-            print(error.localizedDescription)
+            print(error.localizedDescription + "parse error")
             return []
         }
     }

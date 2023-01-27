@@ -10,7 +10,6 @@ import Foundation
 protocol HomeViewModelInput {
     var output: HomeViewModelOutput? { get set }
     
-    func viewDidLoad()
     func getBusinessList(for location: String)
     func getBusinessList()
     func getSections() -> [Section]
@@ -19,17 +18,20 @@ protocol HomeViewModelInput {
 }
 
 protocol HomeViewModelOutput: AnyObject {
-    func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [LocationData])
+    func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [LocationModel])
     func home(_ viewModel: HomeViewModelInput, sectionDidLoad list: [Section])
 }
 
 final class HomeViewModel: HomeViewModelInput  {
     
     //MARK: Properties
+    private var cityNameAPI: CityNameFetchable
+    private var coordinateAPI: CoordinateFetchable
+    
+    
     private var sections: [Section] = []
     private var businessList: [LocationModel] = []
     private var cells: [HomeCollectionViewCellViewModel] = []
-    private let networkManager: NetworkManager
     private let geoLocationManager: GeoLocationManager
     private var lat: Double = .zero
     private var lon: Double = .zero
@@ -37,19 +39,28 @@ final class HomeViewModel: HomeViewModelInput  {
     weak var output: HomeViewModelOutput?
 
     
-    init(networkManager: NetworkManager, geoLocationManager: GeoLocationManager) {
-        self.networkManager = networkManager
+    init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager) {
+        self.cityNameAPI = cityNameAPI
+        self.coordinateAPI = coordinateAPI
         self.geoLocationManager = geoLocationManager
-        networkManager.delegate = self
         geoLocationManager.delegate = self
-    }
-    
-    func viewDidLoad() {
         geoLocationManager.requestAuthorization()
     }
     
     func getBusinessList(for location: String) {
-        networkManager.requestBusiness(city: location)
+        cityNameAPI.retrieveByCityName(request: .init(cityName: location)) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let locationModel):
+                self.businessList.append(contentsOf: locationModel)
+                self.businessList = locationModel
+                self.generateCellData()
+                self.output?.home(self, businessListDidLoad: self.businessList)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
     
     func getBusinessList() {
@@ -81,8 +92,9 @@ private extension HomeViewModel {
         }
         
         cells.forEach { item in
-            sections.append(.init(title: "Test Title", location: item))
+            sections.append(.init(location: item))
         }
+        
         
         output?.home(self, sectionDidLoad: sections)
     }
@@ -101,19 +113,21 @@ private extension HomeViewModel {
     }
 }
 
-//MARK: - NetworkManagerDelegate
-extension HomeViewModel: NetworkManagerDelegate {
-    func didGetLocation(_ networkManager: NetworkManager, _ location: [LocationModel]) {
-        businessList = location
-        self.generateCellData()
-    }
-}
-
 extension HomeViewModel: GeoLocationManagerDelegate {
     func didUpdateLocation(_ geoLocationManager: GeoLocationManager, _ geoLocation: GeoLocationModel) {
-        lat = geoLocation.lat
-        lon = geoLocation.lon
-        networkManager.requestBusiness(lat: lat, lon: lon)
+        coordinateAPI.retrieveByCoordinate(request: .init(lat: geoLocation.lat, lon: geoLocation.lon)) { [weak self] result in
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let locationModel):
+                self.businessList.append(contentsOf: locationModel)
+                self.businessList = locationModel
+                self.generateCellData()
+                self.output?.home(self, businessListDidLoad: self.businessList)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
-
