@@ -9,12 +9,19 @@ import Foundation
 
 class RequestModel {
     
+    var offset = 0
+    
+    var limit = 20
+    
     var path: String {
         .empty
     }
     
     var parameters: [String: Any?] {
-        [:]
+        [
+            "limit" : limit.stringValue,
+            "offset" : offset.stringValue
+        ]
     }
     
     var headers: [String:String] {
@@ -26,7 +33,8 @@ class RequestModel {
 }
 
 extension RequestModel {
-    func generateRequest() -> URLRequest? {
+    func generateRequest(at page: Int) -> URLRequest? {
+        calculateOffset(at: page)
         guard let url = generateURL(with: generateQueryItems()) else { return nil }
         
         var request = URLRequest(url: url)
@@ -35,6 +43,14 @@ extension RequestModel {
         }
         
         return request
+    }
+    
+    func calculateOffset(at page: Int) {
+        offset = limit*page
+    }
+    
+    func resetOffset() {
+        offset = 0
     }
 }
 

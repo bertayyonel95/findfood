@@ -16,8 +16,8 @@ final class CityNameRequestModel: RequestModel {
     }
     
     override var parameters: [String : Any?] {
-        [
-            "location": String(self.cityName)
-        ]
+        var parameters = super.parameters
+        parameters["location"] = String(self.cityName)
+        return parameters
     }
 }

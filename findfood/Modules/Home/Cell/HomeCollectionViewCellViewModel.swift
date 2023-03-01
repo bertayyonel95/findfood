@@ -17,6 +17,15 @@ struct HomeCollectionViewCellViewModel: Hashable, Codable {
     let phone: String
     let address: [String]
     
+    var lastVisited: String {
+        do {
+            let lastVisited = try UserDefaultsManager.shared.getObject(forKey: Constant.UserDefaults.lastVisitDate, castTo: [String:String].self)
+            return lastVisited[id] ?? ""
+        } catch {
+            return ""
+        }
+    }
+    
     var isLiked: Bool {
         false
     }

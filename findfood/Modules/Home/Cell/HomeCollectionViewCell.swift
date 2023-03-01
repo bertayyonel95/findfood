@@ -17,6 +17,14 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     private var viewModel: HomeCollectionViewCellViewModel?
     weak var delegate: HomeCollectionViewCellViewDelegate?
     
+    override func prepareForReuse() {
+        name.text = nil
+        rating.text = nil
+        price.text = nil
+        lastVisited.text = nil
+        imageView.image = nil
+    }
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
         imageView.clipsToBounds = true
@@ -43,6 +51,16 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         return price
     }()
     
+    private let lastVisited: UILabel = {
+        let lastVisited = UILabel()
+        lastVisited.numberOfLines = 1
+        lastVisited.font = lastVisited.font.withSize(12)
+        lastVisited.textColor = .gray
+        lastVisited.isEnabled = false
+        lastVisited.text = .empty
+        return lastVisited
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -54,10 +72,15 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     func configure(with viewModel: HomeCollectionViewCellViewModel) {
         self.viewModel = viewModel
-        imageView.downloaded(from: viewModel.image_url)
+        //imageView.downloaded(from: viewModel.image_url)
+        imageView.kf.setImage(with: viewModel.image_url)
         name.text = viewModel.name
         rating.text = viewModel.rating
         price.text = viewModel.price
+        if !viewModel.lastVisited.isEmpty {
+            lastVisited.text = "Last visited on: " + viewModel.lastVisited
+            lastVisited.isEnabled = true
+        }
     }
 }
 
@@ -71,6 +94,7 @@ private extension HomeCollectionViewCell {
         addSubview(name)
         addSubview(rating)
         addSubview(price)
+        addSubview(lastVisited)
 
         imageView.setConstraint(
             top: topAnchor,
@@ -102,6 +126,13 @@ private extension HomeCollectionViewCell {
             leading: imageView.trailingAnchor,
             topConstraint: 5,
             leadingConstraint: 5
+        )
+        
+        lastVisited.setConstraint(
+            bottom: bottomAnchor,
+            trailing: trailingAnchor,
+            bottomConstraint: 5,
+            trailingConstraint: 5
         )
     }
 }

@@ -19,7 +19,8 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     //MARK: Properties
     private var viewModel: HomeViewModelInput
     private lazy var dataSource = generateDatasource()
-    private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>() 
+    private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
+    private var page = 0
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: .zero)
@@ -43,18 +44,15 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     }()
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
+        super.loadView()
         setupView()
-        viewModel.getBusinessList(for: "Istanbul")
-        applySnapshot(animatingDifferences: false)
+        //viewModel.getBusinessList(for: "Istanbul", mode: true)
+       // applySnapshot(animatingDifferences: false)
     }
     
     init(viewModel: HomeViewModelInput) {
         self.viewModel = viewModel
-        
         super.init(nibName: nil, bundle: .main)
-        
         self.viewModel.output = self
     }
 
@@ -121,7 +119,8 @@ private extension HomeController {
     
     @objc
     func searchClicked() {
-        viewModel.getBusinessList(for: searchBar.text ?? " ")
+        page = 0
+        viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
     }
 }
 
@@ -131,8 +130,21 @@ extension HomeController: UICollectionViewDelegate {
         let section = viewModel.getSections()[indexPath.section]
         let cellViewModel = section.location
         
+        DispatchQueue.main.async {
+            self.viewModel.updateLastVisited(with: cellViewModel)
+            self.collectionView.reloadData()
+        }
         let detailVC = DetailController(cellViewModel: cellViewModel)
         navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if searchBar.text != "" {
+            if indexPath[0] + 5 == viewModel.getDataSize() {
+                page += 1
+                viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
+            }
+        }
     }
 }
 

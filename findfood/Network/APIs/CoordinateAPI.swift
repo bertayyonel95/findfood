@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CoordinateFetchable {
-    func retrieveByCoordinate(request: CoordinateRequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
+    func retrieveByCoordinate(request: CoordinateRequestModel, at page: Int, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
 }
 
 final class CoordinateAPI: CoordinateFetchable {
@@ -18,7 +18,7 @@ final class CoordinateAPI: CoordinateFetchable {
         self.networkManager = networkManager
     }
     
-    func retrieveByCoordinate(request: CoordinateRequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
-        networkManager.request(request: request, completion: completion)
+    func retrieveByCoordinate(request: CoordinateRequestModel, at page: Int, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
+        networkManager.request(request: request, at: page, completion: completion)
     }
 }
