@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate {
     func collectionView(_ cell: HomeCollectionViewCell, viewModel: HomeCollectionViewCellViewModel) {
@@ -21,6 +22,7 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
     private var page = 0
+    private let cache = ImageCache.default
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: .zero)
@@ -46,6 +48,7 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     override func viewDidLoad() {
         super.loadView()
         setupView()
+        cache.memoryStorage.config.totalCostLimit = 500 * 1024 * 1024
         //viewModel.getBusinessList(for: "Istanbul", mode: true)
        // applySnapshot(animatingDifferences: false)
     }
@@ -120,6 +123,7 @@ private extension HomeController {
     @objc
     func searchClicked() {
         page = 0
+        cache.clearMemoryCache()
         viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
     }
 }

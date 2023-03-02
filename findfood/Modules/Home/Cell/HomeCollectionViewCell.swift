@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol HomeCollectionViewCellViewDelegate: AnyObject {
     func collectionView(_ cell: HomeCollectionViewCell, viewModel: HomeCollectionViewCellViewModel)
@@ -22,6 +23,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         rating.text = nil
         price.text = nil
         lastVisited.text = nil
+        imageView.kf.cancelDownloadTask()
         imageView.image = nil
     }
     
@@ -72,8 +74,8 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     
     func configure(with viewModel: HomeCollectionViewCellViewModel) {
         self.viewModel = viewModel
-        //imageView.downloaded(from: viewModel.image_url)
-        imageView.kf.setImage(with: viewModel.image_url)
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(with: URL(string: viewModel.image_url))
         name.text = viewModel.name
         rating.text = viewModel.rating
         price.text = viewModel.price

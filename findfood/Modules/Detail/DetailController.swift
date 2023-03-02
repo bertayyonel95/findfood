@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class DetailController: UIViewController {
     
@@ -70,7 +71,9 @@ private extension DetailController {
         nameLabel.text = "Name: \(viewModel.name)"
         phoneLabel.text = "Phone: \(viewModel.phone)"
         addressLabel.text = "\(viewModel.address.joined(separator: ", "))"
-        imageView.downloaded(from: viewModel.image_url)
+        imageView.kf.setImage(with: URL(string: viewModel.image_url))
+        //imageView.downloaded(from: viewModel.image_url)
+        
     }
     
     func setupViews() {
