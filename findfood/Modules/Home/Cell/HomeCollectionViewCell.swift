@@ -39,17 +39,20 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         name.font = name.font.withSize(19)
         name.numberOfLines = 0
         name.lineBreakMode = .byWordWrapping
+        name.textColor = .black
         return name
     }()
     
     private let rating: UILabel = {
         let rating = UILabel(frame: .zero)
+        rating.textColor = .black
         return rating
     }()
     
     private let price: UILabel = {
         let price = UILabel(frame: .zero)
         price.font = price.font.withSize(16)
+        price.textColor = .black
         return price
     }()
     
@@ -89,7 +92,10 @@ final class HomeCollectionViewCell: UICollectionViewCell {
 //MARK: - Helpers
 private extension HomeCollectionViewCell {
     func setupView() {
-        self.backgroundColor = .white
+        self.backgroundColor = .customBackgroundColor
+        name.textColor = .customTextColor
+        rating.textColor = .customTextColor
+        price.textColor = .customTextColor
         self.clipsToBounds = true
         // Snapkit
         addSubview(imageView)
@@ -97,7 +103,7 @@ private extension HomeCollectionViewCell {
         addSubview(rating)
         addSubview(price)
         addSubview(lastVisited)
-
+        
         imageView.setConstraint(
             top: topAnchor,
             leading: leadingAnchor,

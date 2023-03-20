@@ -34,6 +34,13 @@
 		ABB981DC2972EA62008095E3 /* GeoLocationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB981DB2972EA62008095E3 /* GeoLocationModel.swift */; };
 		ABD6040329ACC54A006D4342 /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD6040229ACC54A006D4342 /* Int+Extension.swift */; };
 		ABD6040629AF6FEC006D4342 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = ABD6040529AF6FEC006D4342 /* Kingfisher */; };
+		ABF1828C29BCE5BF00DB650B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = ABF1828B29BCE5BF00DB650B /* FirebaseAuth */; };
+		ABF1828E29C05D9F00DB650B /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF1828D29C05D9F00DB650B /* FirebaseManager.swift */; };
+		ABF1829029C061F100DB650B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABF1828F29C061F100DB650B /* GoogleService-Info.plist */; };
+		ABF1829229C1D6B600DB650B /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF1829129C1D6B600DB650B /* UIColor+Extension.swift */; };
+		ABF1829729C5F2F200DB650B /* LogInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF1829629C5F2F200DB650B /* LogInController.swift */; };
+		ABF1829929C5F31E00DB650B /* LogInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF1829829C5F31E00DB650B /* LogInViewModel.swift */; };
+		ABF1829C29C5F5CC00DB650B /* HamburgerMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF1829B29C5F5CC00DB650B /* HamburgerMenuController.swift */; };
 		ABF63F7E29658DCB007447C8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F7D29658DCB007447C8 /* Constants.swift */; };
 		ABF63F8029658E53007447C8 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F7F29658E53007447C8 /* API.swift */; };
 		ABF63F832966F782007447C8 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F822966F782007447C8 /* DetailController.swift */; };
@@ -69,6 +76,12 @@
 		ABB981D92972B46D008095E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		ABB981DB2972EA62008095E3 /* GeoLocationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoLocationModel.swift; sourceTree = "<group>"; };
 		ABD6040229ACC54A006D4342 /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		ABF1828D29C05D9F00DB650B /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
+		ABF1828F29C061F100DB650B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		ABF1829129C1D6B600DB650B /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		ABF1829629C5F2F200DB650B /* LogInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInController.swift; sourceTree = "<group>"; };
+		ABF1829829C5F31E00DB650B /* LogInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewModel.swift; sourceTree = "<group>"; };
+		ABF1829B29C5F5CC00DB650B /* HamburgerMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HamburgerMenuController.swift; sourceTree = "<group>"; };
 		ABF63F7D29658DCB007447C8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		ABF63F7F29658E53007447C8 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		ABF63F822966F782007447C8 /* DetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
@@ -81,6 +94,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ABD6040629AF6FEC006D4342 /* Kingfisher in Frameworks */,
+				ABF1828C29BCE5BF00DB650B /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,6 +124,7 @@
 			children = (
 				AB9045C329471C5D0056C36F /* findfood */,
 				ABB981D7297154BF008095E3 /* findfood.app */,
+				E10CD7D32D71344BA055234D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -131,6 +146,7 @@
 		AB9045D82947250D0056C36F /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				ABF1829D29C871B200DB650B /* FirebaseManager */,
 				ABB76EDE29893C510090B774 /* UserDefaultsManager */,
 				ABB981D82972B460008095E3 /* LocationManager */,
 				AB9045D9294725180056C36F /* NetworkManager */,
@@ -149,6 +165,8 @@
 		AB9045DC29472DA10056C36F /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				ABF1829A29C5F5B100DB650B /* HamburgerMenu */,
+				ABF1829529C5F2DC00DB650B /* LogIn */,
 				ABF63F812966F761007447C8 /* Detail */,
 				AB9045E2294752650056C36F /* Home */,
 				AB9045DE29472E230056C36F /* Launchscreen */,
@@ -159,6 +177,7 @@
 		AB9045DD29472DE80056C36F /* Supports */ = {
 			isa = PBXGroup;
 			children = (
+				ABF1828F29C061F100DB650B /* GoogleService-Info.plist */,
 				AB9045D229471C5E0056C36F /* Info.plist */,
 				AB9045C429471C5D0056C36F /* AppDelegate.swift */,
 				AB9045C629471C5D0056C36F /* SceneDelegate.swift */,
@@ -181,6 +200,7 @@
 				AB9045E8294760440056C36F /* UIImageView+Extension.swift */,
 				AB3D49CD29641E7E006DBE9F /* String+Extensions.swift */,
 				ABD6040229ACC54A006D4342 /* Int+Extension.swift */,
+				ABF1829129C1D6B600DB650B /* UIColor+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -258,6 +278,31 @@
 			path = LocationManager;
 			sourceTree = "<group>";
 		};
+		ABF1829529C5F2DC00DB650B /* LogIn */ = {
+			isa = PBXGroup;
+			children = (
+				ABF1829629C5F2F200DB650B /* LogInController.swift */,
+				ABF1829829C5F31E00DB650B /* LogInViewModel.swift */,
+			);
+			path = LogIn;
+			sourceTree = "<group>";
+		};
+		ABF1829A29C5F5B100DB650B /* HamburgerMenu */ = {
+			isa = PBXGroup;
+			children = (
+				ABF1829B29C5F5CC00DB650B /* HamburgerMenuController.swift */,
+			);
+			path = HamburgerMenu;
+			sourceTree = "<group>";
+		};
+		ABF1829D29C871B200DB650B /* FirebaseManager */ = {
+			isa = PBXGroup;
+			children = (
+				ABF1828D29C05D9F00DB650B /* FirebaseManager.swift */,
+			);
+			path = FirebaseManager;
+			sourceTree = "<group>";
+		};
 		ABF63F7B29658DA2007447C8 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -285,6 +330,13 @@
 			path = Detail;
 			sourceTree = "<group>";
 		};
+		E10CD7D32D71344BA055234D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -303,6 +355,7 @@
 			name = findfood;
 			packageProductDependencies = (
 				ABD6040529AF6FEC006D4342 /* Kingfisher */,
+				ABF1828B29BCE5BF00DB650B /* FirebaseAuth */,
 			);
 			productName = findfood;
 			productReference = ABB981D7297154BF008095E3 /* findfood.app */;
@@ -333,7 +386,8 @@
 			);
 			mainGroup = AB9045B829471C5D0056C36F;
 			packageReferences = (
-				ABD6040429AF6FEC006D4342 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				ABD6040429AF6FEC006D4342 /* XCRemoteSwiftPackageReference "Kingfisher.git" */,
+				ABF1828A29BCE5BF00DB650B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = AB9045B829471C5D0056C36F;
 			projectDirPath = "";
@@ -351,6 +405,7 @@
 			files = (
 				AB9045D129471C5E0056C36F /* LaunchScreen.storyboard in Resources */,
 				AB9045CE29471C5E0056C36F /* Assets.xcassets in Resources */,
+				ABF1829029C061F100DB650B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,8 +425,10 @@
 				ABF63F88296839DF007447C8 /* HomeViewModel.swift in Sources */,
 				AB9045C929471C5D0056C36F /* HomeController.swift in Sources */,
 				AB3D49CE29641E7E006DBE9F /* String+Extensions.swift in Sources */,
+				ABF1829229C1D6B600DB650B /* UIColor+Extension.swift in Sources */,
 				ABB76EDD2983C1DC0090B774 /* CityNameAPI.swift in Sources */,
 				AB3D49CA29641186006DBE9F /* Section.swift in Sources */,
+				ABF1829C29C5F5CC00DB650B /* HamburgerMenuController.swift in Sources */,
 				AB9045C529471C5D0056C36F /* AppDelegate.swift in Sources */,
 				ABB76EE029893C610090B774 /* UserDefaultsManager.swift in Sources */,
 				ABF63F7E29658DCB007447C8 /* Constants.swift in Sources */,
@@ -380,8 +437,11 @@
 				ABB76ED62983BDCC0090B774 /* CoordinateRequestModel.swift in Sources */,
 				ABD6040329ACC54A006D4342 /* Int+Extension.swift in Sources */,
 				AB45D51129813EFB005DB576 /* APIError.swift in Sources */,
+				ABF1829929C5F31E00DB650B /* LogInViewModel.swift in Sources */,
+				ABF1828E29C05D9F00DB650B /* FirebaseManager.swift in Sources */,
 				AB9045E5294756EC0056C36F /* HomeCollectionViewCellViewModel.swift in Sources */,
 				AB9045EC2948AB940056C36F /* LocationData.swift in Sources */,
+				ABF1829729C5F2F200DB650B /* LogInController.swift in Sources */,
 				AB9045E9294760440056C36F /* UIImageView+Extension.swift in Sources */,
 				ABF63F832966F782007447C8 /* DetailController.swift in Sources */,
 				AB9045EE2948AD070056C36F /* LocationModel.swift in Sources */,
@@ -528,7 +588,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZTWYW76YMF;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SlideMenuControllerSwift\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SlideMenuControllerSwift/SlideMenuControllerSwift.framework/Headers\"",
+				);
 				INFOPLIST_FILE = findfood/Supports/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -556,7 +624,15 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZTWYW76YMF;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SlideMenuControllerSwift\"",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/SlideMenuControllerSwift/SlideMenuControllerSwift.framework/Headers\"",
+				);
 				INFOPLIST_FILE = findfood/Supports/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -600,7 +676,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		ABD6040429AF6FEC006D4342 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+		ABD6040429AF6FEC006D4342 /* XCRemoteSwiftPackageReference "Kingfisher.git" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
 			requirement = {
@@ -608,13 +684,26 @@
 				minimumVersion = 7.0.0;
 			};
 		};
+		ABF1828A29BCE5BF00DB650B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		ABD6040529AF6FEC006D4342 /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = ABD6040429AF6FEC006D4342 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			package = ABD6040429AF6FEC006D4342 /* XCRemoteSwiftPackageReference "Kingfisher.git" */;
 			productName = Kingfisher;
+		};
+		ABF1828B29BCE5BF00DB650B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ABF1828A29BCE5BF00DB650B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -23,6 +23,13 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
     private var page = 0
     private let cache = ImageCache.default
+    private var isSlideMenuPresented = false
+    private enum LastRequest {
+        case byLocation
+        case bySearch
+    }
+    private var lastRequest: LastRequest = LastRequest.byLocation
+    private lazy var slideInMenuPadding: CGFloat = self.view.frame.width * 0.30
     
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: .zero)
@@ -33,6 +40,17 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
         return searchBar
     }()
 
+    private lazy var menuView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .blue
+        return view
+    }()
+    
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
     private lazy var collectionView: UICollectionView = {
         let collectionViewLayout = UICollectionViewFlowLayout()
         collectionViewLayout.scrollDirection = .vertical
@@ -49,8 +67,6 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
         super.loadView()
         setupView()
         cache.memoryStorage.config.totalCostLimit = 500 * 1024 * 1024
-        //viewModel.getBusinessList(for: "Istanbul", mode: true)
-       // applySnapshot(animatingDifferences: false)
     }
     
     init(viewModel: HomeViewModelInput) {
@@ -93,38 +109,78 @@ private extension HomeController {
     }
     
     func setupView() {
-        view.backgroundColor = .white
-        view.addSubview(searchBar)
-        view.addSubview(collectionView)
+        view.backgroundColor = .customBackgroundColor
+        containerView.backgroundColor = .customBackgroundColor
+        containerView.addSubview(searchBar)
+        containerView.addSubview(collectionView)
+        view.addSubview(menuView)
+        view.addSubview(containerView)
         
-        searchBar.setConstraint(
-            top: view.safeAreaLayoutGuide.topAnchor,
-            leading: view.leadingAnchor,
-            bottom: collectionView.topAnchor,
-            trailing: view.trailingAnchor,
-            topConstraint: .zero,
-            leadingConstraint: 5.0,
-            trailingConstraint: 5.0,
-            height: 50.0
-        )
         
-        collectionView.setConstraint(
+        menuView.setConstraint(
             top: searchBar.bottomAnchor,
             leading: view.leadingAnchor,
             bottom: view.safeAreaLayoutGuide.bottomAnchor,
             trailing: view.trailingAnchor,
-            topConstraint: 20.0,
+            topConstraint: .zero,
+            leadingConstraint: .zero,
+            bottomConstraint: .zero,
+            trailingConstraint: slideInMenuPadding
+        )
+        
+        containerView.setConstraint(
+            top: view.safeAreaLayoutGuide.topAnchor,
+            leading: view.leadingAnchor,
+            bottom: view.safeAreaLayoutGuide.bottomAnchor,
+            trailing: view.trailingAnchor,
+            topConstraint: .zero,
             leadingConstraint: .zero,
             bottomConstraint: .zero,
             trailingConstraint: .zero
         )
+        
+        collectionView.setConstraint(
+            top: searchBar.bottomAnchor,
+            leading: containerView.leadingAnchor,
+            bottom: containerView.safeAreaLayoutGuide.bottomAnchor,
+            trailing: containerView.trailingAnchor,
+            topConstraint: .zero,
+            leadingConstraint: .zero,
+            bottomConstraint: .zero,
+            trailingConstraint: .zero
+        )
+        
+        searchBar.setConstraint(
+            top: containerView.topAnchor,
+            leading: containerView.leadingAnchor,
+            bottom: collectionView.topAnchor,
+            trailing: containerView.trailingAnchor,
+            topConstraint: .zero,
+            leadingConstraint: .zero,
+            trailingConstraint: .zero,
+            height: 50.0
+        )
+        
+        let button1 = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal" ), style: .plain, target: self, action: Selector(("popUpMenu")))
+        self.navigationItem.leftBarButtonItem = button1
     }
     
     @objc
     func searchClicked() {
         page = 0
+        lastRequest = LastRequest.bySearch
         cache.clearMemoryCache()
         viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
+        collectionView.setContentOffset(CGPoint.zero, animated: true)
+    }
+    
+    @objc
+    func popUpMenu() {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut) {
+            self.containerView.frame.origin.x = self.isSlideMenuPresented ? 0 : self.containerView.frame.width - self.slideInMenuPadding
+        } completion: { (finished) in
+            self.isSlideMenuPresented.toggle()
+        }
     }
 }
 
@@ -143,11 +199,15 @@ extension HomeController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if searchBar.text != "" {
-            if indexPath[0] + 5 == viewModel.getDataSize() {
-                page += 1
+        if indexPath[0] + 5 == viewModel.getDataSize() {
+            page += 1
+            switch lastRequest {
+            case .bySearch:
                 viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
+            case .byLocation:
+                viewModel.getBusinessListWithLocation(at: page)
             }
+                
         }
     }
 }
@@ -186,6 +246,9 @@ extension HomeController: UISearchBarDelegate {
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        lastRequest = LastRequest.byLocation
+        page = 0
         viewModel.getLocationData()
+        collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
 }

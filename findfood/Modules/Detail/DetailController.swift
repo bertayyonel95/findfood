@@ -26,12 +26,14 @@ final class DetailController: UIViewController {
     }()
     
     private var nameLabel: UILabel = {
-       let nameLabel = UILabel()
+        let nameLabel = UILabel()
+        nameLabel.textColor = .customTextColor
         return nameLabel
     }()
     
     private var phoneLabel: UILabel = {
         let phoneLabel = UILabel()
+        phoneLabel.textColor = .customTextColor
         return phoneLabel
     }()
     
@@ -39,12 +41,14 @@ final class DetailController: UIViewController {
         let addressLabel = UILabel()
         addressLabel.numberOfLines = 0
         addressLabel.lineBreakMode = .byWordWrapping
+        addressLabel.textColor = .customTextColor
         return addressLabel
     }()
     
     private var addressTitle: UILabel = {
         let addressTitle = UILabel()
         addressTitle.text = "Address: "
+        addressTitle.textColor = .customTextColor
         return addressTitle
     }()
     
@@ -77,10 +81,9 @@ private extension DetailController {
     }
     
     func setupViews() {
-        view.backgroundColor = .white
         view.addSubview(scrollView)
         scrollView.contentSize = CGSize(width: view.frame.size.width, height: view.frame.size.height*2)
-        scrollView.backgroundColor = .white
+        scrollView.backgroundColor = .customBackgroundColor
         scrollView.addSubview(imageView)
         scrollView.addSubview(nameLabel)
         scrollView.addSubview(phoneLabel)

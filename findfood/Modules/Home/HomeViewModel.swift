@@ -17,6 +17,7 @@ protocol HomeViewModelInput {
     func getDataSize() -> Int
     func clearData()
     func updateLastVisited(with viewModel: HomeCollectionViewCellViewModel)
+    func getBusinessListWithLocation(at page: Int)
 }
 
 protocol HomeViewModelOutput: AnyObject {
@@ -37,9 +38,9 @@ final class HomeViewModel: HomeViewModelInput  {
     private var lat: Double = .zero
     private var lon: Double = .zero
     private var lastVisitedDateList: [String:String] = [:]
+    private var coordinateRequest: CoordinateRequestModel = CoordinateRequestModel(lat: 0, lon: 0)
     
     weak var output: HomeViewModelOutput?
-
     
     init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager) {
         self.cityNameAPI = cityNameAPI
@@ -56,6 +57,26 @@ final class HomeViewModel: HomeViewModelInput  {
     func getBusinessList(for location: String, at page: Int) {
 
         cityNameAPI.retrieveByCityName(request: .init(cityName: location), at: page) { [weak self] result in
+            guard let self = self else { return }
+            
+            if page == 0 { self.clearData() }
+            
+            switch result {
+            case .success(let locationModel):
+                self.businessList.append(contentsOf: locationModel)
+                self.businessList = locationModel
+                self.generateCellData()
+                self.output?.home(self, businessListDidLoad: self.businessList)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+    }
+    
+    func getBusinessListWithLocation(at page: Int) {
+        coordinateAPI.retrieveByCoordinate(request: coordinateRequest, at: page) { [weak self] result in
+            
             guard let self = self else { return }
             
             if page == 0 { self.clearData() }
@@ -147,19 +168,7 @@ private extension HomeViewModel {
 
 extension HomeViewModel: GeoLocationManagerDelegate {
     func didUpdateLocation(_ geoLocationManager: GeoLocationManager, _ geoLocation: GeoLocationModel) {
-        coordinateAPI.retrieveByCoordinate(request: .init(lat: geoLocation.lat, lon: geoLocation.lon), at: 0) { [weak self] result in
-            
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let locationModel):
-                self.businessList.append(contentsOf: locationModel)
-                self.businessList = locationModel
-                self.generateCellData()
-                self.output?.home(self, businessListDidLoad: self.businessList)
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
+        coordinateRequest = .init(lat: geoLocation.lat, lon: geoLocation.lon)
+        getBusinessListWithLocation(at: 0)
     }
 }
