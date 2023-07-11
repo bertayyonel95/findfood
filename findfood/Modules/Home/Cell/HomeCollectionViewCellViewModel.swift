@@ -4,10 +4,12 @@
 //
 //  Created by Bertay Yönel on 12.12.2022.
 //
+// swiftlint:disable identifier_name
 
 import Foundation
-
+// MARK: - HomeCollectionViewCellViewModel
 struct HomeCollectionViewCellViewModel: Hashable, Codable {
+    // MARK: Properties
     let uuid: UUID
     let id: String
     let name: String
@@ -16,10 +18,9 @@ struct HomeCollectionViewCellViewModel: Hashable, Codable {
     let price: String
     let phone: String
     let address: [String]
-    
     var lastVisited: String {
         do {
-            let lastVisited = try UserDefaultsManager.shared.getObject(forKey: Constant.UserDefaults.lastVisitDate, castTo: [String:String].self)
+            let lastVisited = try UserDefaultsManager.shared.getObject(forKey: Constant.UserDefaults.lastVisitDate, castTo: [String: String].self)
             return lastVisited[id] ?? ""
         } catch {
             return ""
@@ -27,6 +28,8 @@ struct HomeCollectionViewCellViewModel: Hashable, Codable {
     }
     
     var isLiked: Bool {
-        false
+        var liked: Bool
+        liked = FirebaseManager.shared.isLocationLiked(locationID: self.id)
+        return liked
     }
 }

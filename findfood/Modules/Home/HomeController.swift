@@ -6,31 +6,27 @@
 //
 
 import UIKit
-import Kingfisher
-
-final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate {
-    func collectionView(_ cell: HomeCollectionViewCell, viewModel: HomeCollectionViewCellViewModel) {
-        //TODO: Implement
-    }
-    
-    //MARK: Typealias
+import SDWebImage
+// MARK: - HomeController
+final class HomeController: UIViewController {
+    // MARK: Typealias
     typealias DataSource = UICollectionViewDiffableDataSource<Section, HomeCollectionViewCellViewModel>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>
-    
-    //MARK: Properties
+    // MARK: Properties
     private var viewModel: HomeViewModelInput
+    lazy var slideInTransitioningDelegate = SlideInPresentationManager()
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
     private var page = 0
-    private let cache = ImageCache.default
     private var isSlideMenuPresented = false
     private enum LastRequest {
         case byLocation
         case bySearch
     }
+    private var likedLocations: [String] = []
     private var lastRequest: LastRequest = LastRequest.byLocation
     private lazy var slideInMenuPadding: CGFloat = self.view.frame.width * 0.30
-    
+    // MARK: Views
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: .zero)
         searchBar.searchTextField.placeholder = "Enter a location"
@@ -39,11 +35,12 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
         searchBar.delegate = self
         return searchBar
     }()
-
-    private lazy var menuView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .blue
-        return view
+    
+    private lazy var byLocationButton: UIButton = {
+        let byLocationButton = UIButton(frame: .zero)
+        byLocationButton.setTitle("by location", for: .normal)
+        byLocationButton.addTarget(self, action: #selector(byLocationClicked), for: .touchUpInside)
+        return byLocationButton
     }()
     
     private lazy var containerView: UIView = {
@@ -59,20 +56,34 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: HomeCollectionViewCell.identifier)
         collectionView.delegate = self
+        collectionView.keyboardDismissMode = .onDrag
         collectionView.backgroundColor = UIColor.init(red: 213.0/255.0, green: 207.0/255.0, blue: 207.0/255.0, alpha: 1)
         return collectionView
     }()
-
+    // MARK: viewDidLoad
     override func viewDidLoad() {
         super.loadView()
         setupView()
-        cache.memoryStorage.config.totalCostLimit = 500 * 1024 * 1024
     }
-    
+    // MARK: viewWillAppear
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        collectionView.reloadData()
+    }
+    // MARK: init
     init(viewModel: HomeViewModelInput) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: .main)
         self.viewModel.output = self
+        ObserverManager.shared.favouriteStatusChanged.observe(on: self) { [self] loggedIn in
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+    }
+    // MARK: deinit
+    deinit {
+        ObserverManager.shared.removeObservers()
     }
 
     required init?(coder: NSCoder) {
@@ -80,7 +91,7 @@ final class HomeController: UIViewController, HomeCollectionViewCellViewDelegate
     }
 }
 
-//MARK: - Helpers
+// MARK: - Helpers
 private extension HomeController {
     func applySnapshot(animatingDifferences: Bool = true) {
         var snapshot = Snapshot()
@@ -95,14 +106,11 @@ private extension HomeController {
         let dataSource = DataSource(
             collectionView: collectionView,
             cellProvider: { (collectionView, indexPath, cellViewModel) -> UICollectionViewCell? in
-                
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HomeCollectionViewCell.identifier, for: indexPath) as? HomeCollectionViewCell else {
                     return .init(frame: .zero)
                 }
-                
                 cell.delegate = self
                 cell.configure(with: cellViewModel)
-                
                 return cell
             })
         return dataSource
@@ -113,20 +121,7 @@ private extension HomeController {
         containerView.backgroundColor = .customBackgroundColor
         containerView.addSubview(searchBar)
         containerView.addSubview(collectionView)
-        view.addSubview(menuView)
         view.addSubview(containerView)
-        
-        
-        menuView.setConstraint(
-            top: searchBar.bottomAnchor,
-            leading: view.leadingAnchor,
-            bottom: view.safeAreaLayoutGuide.bottomAnchor,
-            trailing: view.trailingAnchor,
-            topConstraint: .zero,
-            leadingConstraint: .zero,
-            bottomConstraint: .zero,
-            trailingConstraint: slideInMenuPadding
-        )
         
         containerView.setConstraint(
             top: view.safeAreaLayoutGuide.topAnchor,
@@ -161,30 +156,41 @@ private extension HomeController {
             height: 50.0
         )
         
-        let button1 = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal" ), style: .plain, target: self, action: Selector(("popUpMenu")))
-        self.navigationItem.leftBarButtonItem = button1
+        let sideMenuButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal" ), style: .plain, target: self, action: #selector(self.popUpMenu))
+        self.navigationItem.leftBarButtonItem = sideMenuButton
     }
     
     @objc
     func searchClicked() {
         page = 0
         lastRequest = LastRequest.bySearch
-        cache.clearMemoryCache()
+        SDImageCache.shared.clearMemory()
+        SDImageCache.shared.clearDisk()
         viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
         collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
     
     @objc
     func popUpMenu() {
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut) {
-            self.containerView.frame.origin.x = self.isSlideMenuPresented ? 0 : self.containerView.frame.width - self.slideInMenuPadding
-        } completion: { (finished) in
-            self.isSlideMenuPresented.toggle()
+        var sideMenuVC: UIViewController
+        if FirebaseManager.shared.userExists() {
+            sideMenuVC = UserMenuViewController()
+        } else {
+            sideMenuVC = SideMenuController()
         }
+        slideInTransitioningDelegate.direction = .left
+        sideMenuVC.transitioningDelegate = slideInTransitioningDelegate
+        sideMenuVC.modalPresentationStyle = .custom
+        self.present(sideMenuVC, animated: true, completion: nil)
+    }
+    
+    @objc
+    func byLocationClicked() {
+        print("by location clicked")
     }
 }
 
-//MARK: - UICollectionViewDelegate
+// MARK: - UICollectionViewDelegate
 extension HomeController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let section = viewModel.getSections()[indexPath.section]
@@ -212,15 +218,17 @@ extension HomeController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
 extension HomeController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         20
     }
 }
 
+// MARK: - HomeViewModelOutput
 extension HomeController: HomeViewModelOutput {
     func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [LocationModel]) {
-        //TODO: Implement
+        // TODO: Implement
     }
     
     func home(_ viewModel: HomeViewModelInput, sectionDidLoad list: [Section]) {
@@ -231,7 +239,7 @@ extension HomeController: HomeViewModelOutput {
     }
 }
 
-//MARK: - UISearchBarDelegate
+// MARK: - UISearchBarDelegate
 extension HomeController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchClicked()
@@ -250,5 +258,31 @@ extension HomeController: UISearchBarDelegate {
         page = 0
         viewModel.getLocationData()
         collectionView.setContentOffset(CGPoint.zero, animated: true)
+    }
+}
+
+// MARK: - HomeCollectionViewCellViewDelegate
+extension HomeController: HomeCollectionViewCellViewDelegate {
+    func collectionView(_ cell: HomeCollectionViewCell, likeButtonDidPressedWith viewModel: HomeCollectionViewCellViewModel) {
+        if FirebaseManager.shared.userExists() {
+            viewModel.isLiked ?
+            self.viewModel.dislikeLocation(with: viewModel) :
+            self.viewModel.likeLocation(with: viewModel)
+        } else {
+            ErrorMessageManager.shared.showErrorMessage(
+                in: self,
+                title: "Log In",
+                errorMessage: "You need to be logged in to favourite",
+                actions: [
+                    UIAlertAction(title: "Log In", style: .default) { _ in
+                        let loginViewModel = LoginViewModel()
+                        let loginVC = LogInController(viewModel: loginViewModel)
+                        self.slideInTransitioningDelegate.direction = .bottom
+                        loginVC.transitioningDelegate = self.slideInTransitioningDelegate
+                        loginVC.modalPresentationStyle = .custom
+                        self.present(loginVC, animated: true, completion: nil)
+                    }
+                ])
+        }
     }
 }

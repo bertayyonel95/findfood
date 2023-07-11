@@ -8,7 +8,6 @@
 import Foundation
 
 extension Constant {
-    
     class UserDefaults {
         static let lastVisitDate = "lastVisitDate"
     }

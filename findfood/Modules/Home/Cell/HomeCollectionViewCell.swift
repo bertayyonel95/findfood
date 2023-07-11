@@ -6,26 +6,26 @@
 //
 
 import UIKit
-import Kingfisher
-
+import SDWebImage
+// MARK: - HomeCollectionViewCellViewDelegate
 protocol HomeCollectionViewCellViewDelegate: AnyObject {
-    func collectionView(_ cell: HomeCollectionViewCell, viewModel: HomeCollectionViewCellViewModel)
+    func collectionView(_ cell: HomeCollectionViewCell, likeButtonDidPressedWith viewModel: HomeCollectionViewCellViewModel)
 }
-
+// MARK: - HomeCollectionViewCell
 final class HomeCollectionViewCell: UICollectionViewCell {
-    
+    // MARK: Properties
     static let identifier = "HomeCollectionViewCell"
     private var viewModel: HomeCollectionViewCellViewModel?
+    private let transformer = SDImageResizingTransformer(size: CGSize(width: 120, height: 120), scaleMode: .aspectFill)
     weak var delegate: HomeCollectionViewCellViewDelegate?
-    
-    override func prepareForReuse() {
-        name.text = nil
-        rating.text = nil
-        price.text = nil
-        lastVisited.text = nil
-        imageView.kf.cancelDownloadTask()
-        imageView.image = nil
-    }
+    // MARK: Views
+    private lazy var likeButton: UIButton = {
+        let button = UIButton()
+        button.tintColor = .red
+        button.setImage(UIImage(systemName: "heart"), for: .normal)
+        button.addTarget(self, action: #selector(likeButtonPressed), for: .touchUpInside)
+        return button
+    }()
     
     private let imageView: UIImageView = {
         let imageView = UIImageView(frame: .zero)
@@ -65,7 +65,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         lastVisited.text = .empty
         return lastVisited
     }()
-    
+    // MARK: init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -74,32 +74,59 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    // MARK: Functions
+    override func prepareForReuse() {
+        name.text = nil
+        rating.text = nil
+        price.text = nil
+        lastVisited.text = nil
+        imageView.sd_cancelCurrentImageLoad()
+        imageView.image = nil
+        likeButton.setImage(UIImage(systemName:"heart"), for: .normal)
+    }
     
     func configure(with viewModel: HomeCollectionViewCellViewModel) {
         self.viewModel = viewModel
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(with: URL(string: viewModel.image_url))
+        setupLikeButton(with: viewModel.isLiked)
+        imageView.sd_imageIndicator = SDWebImageActivityIndicator.gray
+        imageView.sd_setImage(with: URL(string: viewModel.image_url), placeholderImage: nil, context: [.imageTransformer: transformer])
         name.text = viewModel.name
         rating.text = viewModel.rating
         price.text = viewModel.price
+        
         if !viewModel.lastVisited.isEmpty {
             lastVisited.text = "Last visited on: " + viewModel.lastVisited
             lastVisited.isEnabled = true
         }
+        
     }
 }
 
 //MARK: - Helpers
 private extension HomeCollectionViewCell {
+    @objc
+    func likeButtonPressed() {
+        guard var viewModel = viewModel else { return }
+        if FirebaseManager.shared.userExists() {
+            setupLikeButton(with: !viewModel.isLiked)
+        }
+        delegate?.collectionView(self, likeButtonDidPressedWith: viewModel)
+    }
+    
+    func setupLikeButton(with isFavorited: Bool) {
+        likeButton.setImage(UIImage(systemName: isFavorited ? "heart.fill" : "heart"), for: .normal)
+    }
+    
     func setupView() {
         self.backgroundColor = .customBackgroundColor
         name.textColor = .customTextColor
         rating.textColor = .customTextColor
         price.textColor = .customTextColor
         self.clipsToBounds = true
-        // Snapkit
+
         addSubview(imageView)
         addSubview(name)
+        addSubview(likeButton)
         addSubview(rating)
         addSubview(price)
         addSubview(lastVisited)
@@ -116,10 +143,19 @@ private extension HomeCollectionViewCell {
         name.setConstraint(
             top: topAnchor,
             leading: imageView.trailingAnchor,
-            bottom: rating.topAnchor,
             trailing: trailingAnchor,
+            topConstraint: 15,
             leadingConstraint: 5,
             width: frame.size.width - imageView.frame.size.width - 150
+        )
+        
+        likeButton.setConstraint(
+            top: topAnchor,
+            trailing: trailingAnchor,
+            trailingConstraint: 15,
+            centerY: centerYAnchor,
+            width: 44,
+            height: 44
         )
         
         rating.setConstraint(

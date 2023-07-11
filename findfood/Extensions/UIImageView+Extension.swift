@@ -8,7 +8,6 @@
 import UIKit
 
 extension UIImageView {
-    // Kingfisher
     func downloaded(from url: URL, contentMode mode: ContentMode = .scaleToFill) {
         contentMode = mode
         URLSession.shared.dataTask(with: url) { data, response, error in

@@ -8,9 +8,8 @@
 import Foundation
 
 final class CityNameRequestModel: RequestModel {
-    
+    // MARK: - Properties
     private let cityName: String
-    
     init(cityName: String) {
         self.cityName = cityName
     }

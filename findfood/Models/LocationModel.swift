@@ -4,10 +4,11 @@
 //
 //  Created by Bertay Yönel on 13.12.2022.
 //
-
+// swiftlint:disable identifier_name
 import Foundation
 
 struct LocationModel {
+    // MARK: Properties
     let locationID: String
     let locationName: String
     let locationRating: String
@@ -16,8 +17,7 @@ struct LocationModel {
     let locationCategories: [LocationCategory]
     let display_phone: String
     let display_address: [String]
-    
-    var locationImageURL: URL?{
+    var locationImageURL: URL? {
         if let locationImageURL = URL(string: locatinImageLink) {
             return locationImageURL
         } else {
@@ -27,6 +27,7 @@ struct LocationModel {
 }
 
 extension LocationModel {
+    // MARK: init
     init(with locationData: LocationData) {
         self.locationID = locationData.id
         self.locationName = locationData.name

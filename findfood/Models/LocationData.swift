@@ -4,6 +4,7 @@
 //
 //  Created by Bertay Yönel on 13.12.2022.
 //
+// swiftlint:disable identifier_name
 
 import Foundation
 
@@ -16,7 +17,7 @@ struct LocationData: Decodable {
     let name: String
     let image_url: String
     let rating: Double?
-    let categories : [LocationCategory]
+    let categories: [LocationCategory]
     let price: String?
     let display_phone: String
     let location: LocationAddress

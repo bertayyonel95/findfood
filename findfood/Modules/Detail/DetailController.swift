@@ -6,12 +6,12 @@
 //
 
 import UIKit
-import Kingfisher
-
+import SDWebImage
+// MARK: - DetailController
 final class DetailController: UIViewController {
-    
+    // MARK: Properties
     private let cellViewModel: HomeCollectionViewCellViewModel
-    
+    // MARK: Views
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -51,16 +51,15 @@ final class DetailController: UIViewController {
         addressTitle.textColor = .customTextColor
         return addressTitle
     }()
-    
+    // MARK: viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
     }
-    
+    // MARK: init
     init(cellViewModel: HomeCollectionViewCellViewModel) {
         self.cellViewModel = cellViewModel
         super.init(nibName: nil, bundle: .main)
-        
         navigationItem.title = cellViewModel.name
         configure(with: cellViewModel)
     }
@@ -71,12 +70,12 @@ final class DetailController: UIViewController {
 }
 
 private extension DetailController {
+    // MARK: Functions
     func configure(with viewModel: HomeCollectionViewCellViewModel) {
         nameLabel.text = "Name: \(viewModel.name)"
         phoneLabel.text = "Phone: \(viewModel.phone)"
         addressLabel.text = "\(viewModel.address.joined(separator: ", "))"
-        imageView.kf.setImage(with: URL(string: viewModel.image_url))
-        //imageView.downloaded(from: viewModel.image_url)
+        imageView.sd_setImage(with: URL(string: viewModel.image_url))
         
     }
     

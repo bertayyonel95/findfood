@@ -7,33 +7,36 @@
 
 import Foundation
 
-protocol Networking{
+protocol Networking {
     func request(request: RequestModel, at page: Int, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
 }
 
-//MARK: - NetworkManager
+// MARK: - NetworkManager
 class NetworkManager: Networking {
-    
-    //MARK: Properties
+    // MARK: Properties
     private let session: URLSession
     private let locationURL = Constant.API.url
     private let headers = [
       "accept": "application/json",
       "Authorization": "Bearer " + Constant.API.key
     ]
-    
     var delegate: HomeViewModel?
-    
-    //MARK: Init
+    // MARK: Init
     init(session: URLSession = .shared) {
         self.session = session
     }
-    
+    // MARK: Functions
+    /// Request data with the provided request mode from the database.
+    ///
+    /// - Parameters:
+    ///    - request: request model to be used to make a network request.
+    ///    - page: page number for the data.
     func request(request: RequestModel, at page: Int, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
-        
+        LoadingManager.shared.show()
         guard let generatedRequest = request.generateRequest(at: page) else { return }
         
         let task = session.dataTask(with: generatedRequest) { data, response, error in
+            LoadingManager.shared.hide()
             if error != nil || data == nil { completion(.failure(.unknownError)) }
             
             guard let data = data else { return }
@@ -44,16 +47,18 @@ class NetworkManager: Networking {
         }
         task.resume()
     }
-    
+    /// Parses data retrieved from the network call. Parsed data is then used by the
+    /// location models.
+    ///
+    /// - Parameters:
+    ///    - locationData: data to be parsed.
+    ///
+    /// - Returns: an array with LocationModels.
     func parseJSON(_ locationData: Data) -> [LocationModel]? {
         let decoder = JSONDecoder()
         var locationArray: [LocationModel] = []
         do {
-
             let decodedData = try decoder.decode(Business.self, from: locationData)
-            
-            // SwiftLint eklenecek
-            
             for business in decodedData.businesses {
                 let location = LocationModel(with: business)
                 locationArray.append(location)
@@ -65,5 +70,3 @@ class NetworkManager: Networking {
         }
     }
 }
-
-
