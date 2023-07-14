@@ -14,13 +14,13 @@ struct Business: Decodable {
 
 struct LocationData: Decodable {
     let id: String
-    let name: String
-    let image_url: String
+    let name: String?
+    let image_url: String?
     let rating: Double?
-    let categories: [LocationCategory]
+    let categories: [LocationCategory]?
     let price: String?
-    let display_phone: String
-    let location: LocationAddress
+    let display_phone: String?
+    let location: LocationAddress?
 }
 
 struct LocationCategory: Decodable {

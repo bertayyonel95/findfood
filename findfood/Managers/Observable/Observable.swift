@@ -53,8 +53,8 @@ final class Observable<T> {
     func removeAllObservers() {
         observers = []
     }
-    /// Notift observers of a change in observable.
-    /// Cycles through the observable list to notify each.
+    /// Notify observers of a change in observable.
+    /// Cycles through the observers list to notify each.
     func notifyObservers() {
         observers.forEach { observer in
             observer.queue.async {

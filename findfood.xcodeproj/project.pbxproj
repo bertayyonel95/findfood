@@ -20,6 +20,8 @@
 		AB3D49CE29641E7E006DBE9F /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB3D49CD29641E7E006DBE9F /* String+Extensions.swift */; };
 		AB45D50E297FD835005DB576 /* RequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB45D50D297FD835005DB576 /* RequestModel.swift */; };
 		AB45D51129813EFB005DB576 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB45D51029813EFB005DB576 /* APIError.swift */; };
+		AB5465D92A607DC600F9FA5E /* LocationIDRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5465D82A607DC600F9FA5E /* LocationIDRequestModel.swift */; };
+		AB5465DB2A6080DA00F9FA5E /* LocationIDAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5465DA2A6080DA00F9FA5E /* LocationIDAPI.swift */; };
 		AB594CA029D716DA000990EC /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB594C9F29D716DA000990EC /* SlideInPresentationManager.swift */; };
 		AB594CA229D716EE000990EC /* PresentationDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB594CA129D716EE000990EC /* PresentationDirection.swift */; };
 		AB5BD4F42A30807100332276 /* UIResponder+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5BD4F32A30807100332276 /* UIResponder+Extensions.swift */; };
@@ -73,6 +75,8 @@
 		AB3D49CD29641E7E006DBE9F /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		AB45D50D297FD835005DB576 /* RequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestModel.swift; sourceTree = "<group>"; };
 		AB45D51029813EFB005DB576 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		AB5465D82A607DC600F9FA5E /* LocationIDRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationIDRequestModel.swift; sourceTree = "<group>"; };
+		AB5465DA2A6080DA00F9FA5E /* LocationIDAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationIDAPI.swift; sourceTree = "<group>"; };
 		AB594C9F29D716DA000990EC /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
 		AB594CA129D716EE000990EC /* PresentationDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationDirection.swift; sourceTree = "<group>"; };
 		AB5BD4F32A30807100332276 /* UIResponder+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIResponder+Extensions.swift"; sourceTree = "<group>"; };
@@ -178,6 +182,7 @@
 				AB45D50D297FD835005DB576 /* RequestModel.swift */,
 				ABB76ED32983BD490090B774 /* CityNameRequestModel.swift */,
 				ABB76ED52983BDCC0090B774 /* CoordinateRequestModel.swift */,
+				AB5465D82A607DC600F9FA5E /* LocationIDRequestModel.swift */,
 			);
 			path = Request;
 			sourceTree = "<group>";
@@ -339,6 +344,7 @@
 			children = (
 				ABB76EDA2983C1420090B774 /* CoordinateAPI.swift */,
 				ABB76EDC2983C1DC0090B774 /* CityNameAPI.swift */,
+				AB5465DA2A6080DA00F9FA5E /* LocationIDAPI.swift */,
 			);
 			path = APIs;
 			sourceTree = "<group>";
@@ -537,6 +543,7 @@
 				ABF63F88296839DF007447C8 /* HomeViewModel.swift in Sources */,
 				AB9045C929471C5D0056C36F /* HomeController.swift in Sources */,
 				AB3D49CE29641E7E006DBE9F /* String+Extensions.swift in Sources */,
+				AB5465DB2A6080DA00F9FA5E /* LocationIDAPI.swift in Sources */,
 				AB594CA029D716DA000990EC /* SlideInPresentationManager.swift in Sources */,
 				ABF1829229C1D6B600DB650B /* UIColor+Extension.swift in Sources */,
 				ABB76EDD2983C1DC0090B774 /* CityNameAPI.swift in Sources */,
@@ -545,6 +552,7 @@
 				AB9045C529471C5D0056C36F /* AppDelegate.swift in Sources */,
 				ABB76EE029893C610090B774 /* UserDefaultsManager.swift in Sources */,
 				ABF63F7E29658DCB007447C8 /* Constants.swift in Sources */,
+				AB5465D92A607DC600F9FA5E /* LocationIDRequestModel.swift in Sources */,
 				AB0C865D2A59E4F900AA9017 /* UserMenuViewController.swift in Sources */,
 				ABB981DC2972EA62008095E3 /* GeoLocationModel.swift in Sources */,
 				ABF63F8029658E53007447C8 /* API.swift in Sources */,

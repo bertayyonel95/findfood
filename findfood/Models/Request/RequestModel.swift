@@ -47,6 +47,14 @@ extension RequestModel {
         }
         return request
     }
+    func generateRequest(with locationID: String) -> URLRequest? {
+        guard let url = generateURLWithLocationID(with: generateQueryItems(), locationID: locationID) else { return nil }
+        var request = URLRequest(url: url)
+        headers.forEach { header in
+            request.addValue(header.value, forHTTPHeaderField: header.key)
+        }
+        return request
+    }
     /// Calculates and offset to make the bulk data act as paged.
     ///
     /// - Parameters:
@@ -63,9 +71,18 @@ extension RequestModel {
 private extension RequestModel {
     // MARK: Private Functions
     func generateURL(with queryItems: [URLQueryItem]) -> URL? {
-        let endpoint = Constant.API.url.appending(path)
+        let endpoint = Constant.API.urlSearch.appending(path)
         var urlComponents = URLComponents(string: endpoint)
         urlComponents?.queryItems = queryItems
+        guard let url = urlComponents?.url else { return nil }
+        return url
+    }
+    func generateURLWithLocationID(with queryItems: [URLQueryItem], locationID: String) -> URL? {
+        let endpoint = Constant.API.url + locationID
+        var urlComponents = URLComponents(string: endpoint)
+        if !queryItems.isEmpty {
+            urlComponents?.queryItems = queryItems
+        }
         guard let url = urlComponents?.url else { return nil }
         return url
     }

@@ -21,6 +21,7 @@ protocol HomeViewModelInput {
     func dislikeLocation(with viewModel: HomeCollectionViewCellViewModel)
     func updateLastVisited(with viewModel: HomeCollectionViewCellViewModel)
     func getBusinessListWithLocation(at page: Int)
+    func getBusinessListWithFavourites(favouriteLocations: [String])
 }
 // MARK: - HomeViewModelOutput
 protocol HomeViewModelOutput: AnyObject {
@@ -32,6 +33,7 @@ final class HomeViewModel: HomeViewModelInput  {
     //MARK: Properties
     private var cityNameAPI: CityNameFetchable
     private var coordinateAPI: CoordinateFetchable
+    private var locationIDAPI: LocationIDFetchable
     private var sections: [Section] = []
     private var businessList: [LocationModel] = []
     private var cells: [HomeCollectionViewCellViewModel] = []
@@ -42,10 +44,11 @@ final class HomeViewModel: HomeViewModelInput  {
     private var coordinateRequest: CoordinateRequestModel = CoordinateRequestModel(lat: 0, lon: 0)
     weak var output: HomeViewModelOutput?
     // MARK: init
-    init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager) {
+    init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager, locationIDAPI: LocationIDAPI) {
         self.cityNameAPI = cityNameAPI
         self.coordinateAPI = coordinateAPI
         self.geoLocationManager = geoLocationManager
+        self.locationIDAPI = locationIDAPI
         geoLocationManager.delegate = self
         geoLocationManager.requestAuthorization()
     }
@@ -62,9 +65,7 @@ final class HomeViewModel: HomeViewModelInput  {
     func getBusinessList(for location: String, at page: Int) {
         cityNameAPI.retrieveByCityName(request: .init(cityName: location), at: page) { [weak self] result in
             guard let self = self else { return }
-            
             if page == 0 { self.clearData() }
-            
             switch result {
             case .success(let locationModel):
                 self.businessList.append(contentsOf: locationModel)
@@ -83,9 +84,7 @@ final class HomeViewModel: HomeViewModelInput  {
     func getBusinessListWithLocation(at page: Int) {
         coordinateAPI.retrieveByCoordinate(request: coordinateRequest, at: page) { [weak self] result in
             guard let self = self else { return }
-            
             if page == 0 { self.clearData() }
-            
             switch result {
             case .success(let locationModel):
                 self.businessList.append(contentsOf: locationModel)
@@ -94,6 +93,30 @@ final class HomeViewModel: HomeViewModelInput  {
                 self.output?.home(self, businessListDidLoad: self.businessList)
             case .failure(let error):
                 print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func getBusinessListWithFavourites(favouriteLocations: [String]) {
+        self.clearData()
+        if favouriteLocations.isEmpty {
+            businessList = []
+            generateCellData()
+        } else {
+            
+            favouriteLocations.forEach { location in
+                self.locationIDAPI.retrieveByLocationID(request: .init(locationID: location)) { [weak self] result in
+                    self?.businessList = []
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let locationModel):
+                        self.businessList.insert(locationModel, at: self.businessList.count)
+                        self.generateCellData()
+                        self.output?.home(self, businessListDidLoad: self.businessList)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
             }
         }
     }

@@ -22,6 +22,7 @@ final class HomeController: UIViewController {
     private enum LastRequest {
         case byLocation
         case bySearch
+        case byFavourite
     }
     private var likedLocations: [String] = []
     private var lastRequest: LastRequest = LastRequest.byLocation
@@ -75,15 +76,19 @@ final class HomeController: UIViewController {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: .main)
         self.viewModel.output = self
-        ObserverManager.shared.favouriteStatusChanged.observe(on: self) { [self] loggedIn in
+        ObserverManager.shared.favouriteStatusChanged.observe(on: self) { [self] _ in
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
         }
+        ObserverManager.shared.favouritesClicked.observe(on: self) { [self] _ in
+            self.favouritesClicked()
+        }
     }
     // MARK: deinit
     deinit {
-        ObserverManager.shared.removeObservers()
+        ObserverManager.shared.removeObservers(for: ObserverManager.shared.favouriteStatusChanged)
+        ObserverManager.shared.removeObservers(for: ObserverManager.shared.favouritesClicked)
     }
 
     required init?(coder: NSCoder) {
@@ -188,6 +193,15 @@ private extension HomeController {
     func byLocationClicked() {
         print("by location clicked")
     }
+    
+    func favouritesClicked() {
+        lastRequest = .byFavourite
+        viewModel.getBusinessListWithFavourites(favouriteLocations: FirebaseManager.shared.returnLikedLocations())
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+        collectionView.setContentOffset(CGPoint.zero, animated: true)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -212,6 +226,8 @@ extension HomeController: UICollectionViewDelegate {
                 viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
             case .byLocation:
                 viewModel.getBusinessListWithLocation(at: page)
+            case .byFavourite:
+                return
             }
                 
         }

@@ -75,7 +75,8 @@ class FirebaseManager {
     func userSignOut() {
         do {
             try Auth.auth().signOut()
-            ObserverManager.shared.changeStatus()
+            let observerValue = ObserverManager.shared.favouriteStatusChanged.value
+            ObserverManager.shared.changeStatus(for: ObserverManager.shared.favouriteStatusChanged, with: !observerValue)
             self.clearData()
         } catch let signOutError as NSError {
             self.delegate?.onError(errorMessage: signOutError.localizedDescription)
@@ -95,7 +96,11 @@ class FirebaseManager {
     ///
     /// - Returns: a boolean to identify if a location is liked.
     func isLocationLiked(locationID: String) -> Bool {
-        return likedLocations.contains(locationID)
+        if !self.userExists() {
+            return false
+        } else {
+            return likedLocations.contains(locationID)
+        }
     }
     /// Adds the user to the database and creates an appropiate document.
     ///
@@ -122,7 +127,7 @@ class FirebaseManager {
                 }
             }
             self.likedLocations = likedLocations
-            ObserverManager.shared.changeStatus()
+            ObserverManager.shared.changeStatus(for: ObserverManager.shared.favouriteStatusChanged, with: !ObserverManager.shared.favouriteStatusChanged.value)
         })
     }
     /// Returns the liked locations by the current signed in user.

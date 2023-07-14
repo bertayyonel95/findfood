@@ -16,6 +16,14 @@ class UserMenuViewController: UIViewController {
         return userEmailTextField
     }()
     
+    private lazy var favouritesButton: UIButton = {
+        let favouritesButton = UIButton(frame: .zero)
+        favouritesButton.addTarget(self, action: #selector(favouritesClicked), for: .touchUpInside)
+        favouritesButton.backgroundColor = .systemGray
+        favouritesButton.setTitle("Favourites", for: .normal)
+        return favouritesButton
+    }()
+    
     private lazy var logoutButton: UIButton = {
         let logoutButton = UIButton(frame: .zero)
         logoutButton.addTarget(self, action: #selector(logoutClicked), for: .touchUpInside)
@@ -44,6 +52,7 @@ private extension UserMenuViewController {
     func setupView() {
         view.backgroundColor = .customBackgroundColor
         view.addSubview(userEmailTextField)
+        view.addSubview(favouritesButton)
         view.addSubview(logoutButton)
         
         userEmailTextField.setConstraint(
@@ -51,6 +60,13 @@ private extension UserMenuViewController {
             leading: view.leadingAnchor,
             topConstraint: 55,
             leadingConstraint: 15
+        )
+        
+        favouritesButton.setConstraint(
+            centerX: view.centerXAnchor,
+            centerY: view.centerYAnchor,
+            width: 100.0,
+            height: 50.0
         )
         
         logoutButton.setConstraint(
@@ -65,5 +81,10 @@ private extension UserMenuViewController {
     @objc func logoutClicked() {
         FirebaseManager.shared.userSignOut()
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func favouritesClicked() {
+        ObserverManager.shared.changeStatus(for: ObserverManager.shared.favouritesClicked, with: !ObserverManager.shared.favouritesClicked.value)
+        self.dismiss(animated: true)
     }
 }
