@@ -17,7 +17,7 @@ class SlideInPresentationController: UIPresentationController {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         setupDimmingView()
     }
-    // MARK: Functions
+    // MARK: Helpers
     /// Prepares for the beginning of a transition.
     override func presentationTransitionWillBegin() {
         guard let dimmingView = dimmingView else {

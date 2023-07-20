@@ -21,9 +21,9 @@ struct HomeCollectionViewCellViewModel: Hashable, Codable {
     var lastVisited: String {
         do {
             let lastVisited = try UserDefaultsManager.shared.getObject(forKey: Constant.UserDefaults.lastVisitDate, castTo: [String: String].self)
-            return lastVisited[id] ?? ""
+            return lastVisited[id] ?? .empty
         } catch {
-            return ""
+            return .empty
         }
     }
     

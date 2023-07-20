@@ -16,10 +16,9 @@ protocol Loading {
 
 // MARK: - LoadingManager
 final class LoadingManager: Loading {
-    // MARK: Singleton declaration
-    static let shared: LoadingManager = .init()
-    private init() { }
+    
     // MARK: Properties
+    static let shared: LoadingManager = .init()
     enum Constants {
         static let cornerRadius = 8.0
         static let loadingViewWidth = 74.0
@@ -27,10 +26,14 @@ final class LoadingManager: Loading {
         static let activtyIndicatorWidth = 66.0
         static let activtyIndicatorHeight = 66.0
     }
+    
+    // MARK: Init
+    private init() { }
+    
     // MARK: Views
     private lazy var loadingView: UIView = {
         let view = UIView()
-        view.backgroundColor = .customBackgroundColor.withAlphaComponent(0.3)
+        view.backgroundColor = .systemBackground.withAlphaComponent(0.3)
         view.layer.cornerRadius = Constants.cornerRadius
         return view
     }()
@@ -43,7 +46,7 @@ final class LoadingManager: Loading {
     }()
 }
 
-// MARK: - Functions
+// MARK: - Helpers
 extension LoadingManager {
     /// Show loading view
     func show() {

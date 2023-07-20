@@ -30,7 +30,7 @@ class GeoLocationManager: NSObject {
 }
 // MARK: - GeoLocationManager extension for Functions
 extension GeoLocationManager {
-    // MARK: Functions
+    // MARK: Helpers
     /// Request location authorization from the user.
     func requestAuthorization() {
         locationManager?.requestAlwaysAuthorization()

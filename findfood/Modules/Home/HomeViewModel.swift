@@ -52,10 +52,11 @@ final class HomeViewModel: HomeViewModelInput  {
         geoLocationManager.delegate = self
         geoLocationManager.requestAuthorization()
     }
-    // MARK: Functions
+    // MARK: Helpers
     /// Clears the data from the cells.
     func clearData() {
         cells.removeAll()
+        businessList = []
     }
     /// Populates the business list with the name of a location.
     ///
@@ -63,7 +64,9 @@ final class HomeViewModel: HomeViewModelInput  {
     ///    - locations: name of the location.
     ///    - page: which page of the data is to be retrieved.
     func getBusinessList(for location: String, at page: Int) {
-        cityNameAPI.retrieveByCityName(request: .init(cityName: location), at: page) { [weak self] result in
+        let requestWithName = CityNameRequestModel(cityName: location)
+        requestWithName.offset = page * requestWithName.limit
+        cityNameAPI.retrieveByCityName(request: requestWithName) { [weak self] result in
             guard let self = self else { return }
             if page == 0 { self.clearData() }
             switch result {
@@ -82,7 +85,8 @@ final class HomeViewModel: HomeViewModelInput  {
     /// - Parameters:
     ///    - page: which page of the data is to be retrieved.
     func getBusinessListWithLocation(at page: Int) {
-        coordinateAPI.retrieveByCoordinate(request: coordinateRequest, at: page) { [weak self] result in
+        coordinateRequest.offset = page * coordinateRequest.limit
+        coordinateAPI.retrieveByCoordinate(request: coordinateRequest) { [weak self] result in
             guard let self = self else { return }
             if page == 0 { self.clearData() }
             switch result {
@@ -102,22 +106,30 @@ final class HomeViewModel: HomeViewModelInput  {
         if favouriteLocations.isEmpty {
             businessList = []
             generateCellData()
-        } else {
             
-            favouriteLocations.forEach { location in
-                self.locationIDAPI.retrieveByLocationID(request: .init(locationID: location)) { [weak self] result in
-                    self?.businessList = []
-                    guard let self = self else { return }
-                    switch result {
-                    case .success(let locationModel):
-                        self.businessList.insert(locationModel, at: self.businessList.count)
-                        self.generateCellData()
-                        self.output?.home(self, businessListDidLoad: self.businessList)
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
+            return
+        }
+        
+        let group = DispatchGroup()
+        LoadingManager.shared.show()
+        favouriteLocations.forEach { location in
+            group.enter()
+            self.locationIDAPI.retrieveByLocationID(request: .init(locationID: location)) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let locationModel):
+                    self.businessList.insert(locationModel, at: self.businessList.count)
+                    group.leave()
+                    self.output?.home(self, businessListDidLoad: self.businessList)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    group.leave()
                 }
             }
+        }
+        
+        group.notify(queue: .main) {
+            self.generateCellData()
         }
     }
     
@@ -171,7 +183,7 @@ final class HomeViewModel: HomeViewModelInput  {
     }
 }
 
-//MARK: - Helpers
+// MARK: - Helpers
 private extension HomeViewModel {
     func generateCellData() {
         var sections: [Section] = []
@@ -192,7 +204,7 @@ private extension HomeViewModel {
             id: business.locationID,
             name: business.locationName,
             image_url: business.locatinImageLink,
-            rating: business.locationRating + "/5.0",
+            rating: business.locationRating + Constant.ViewText.ratingLimit,
             price: business.locationPrice,
             phone: business.display_phone,
             address: business.display_address

@@ -26,7 +26,7 @@ final class LoginViewModel: LoginViewModelInput {
     init() {
         FirebaseManager.shared.delegate = self
     }
-    // MARK: Functions
+    // MARK: Helpers
     func logInUser(email: String, password: String) {
         FirebaseManager.shared.userSignIn(withEmail: email, withPassword: password)
     }

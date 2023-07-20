@@ -9,14 +9,12 @@ import Foundation
 
 /// Custom `Error` for Network Manager fail cases
 enum APIError: Error {
-    
     case unknownError
     case connectionError
     case notFound
     case serverError
     case timeOut
     case badRequest
-    
 }
 
 // MARK: - Helpers

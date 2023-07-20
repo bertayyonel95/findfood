@@ -21,7 +21,7 @@ final class Observable<T> {
     init(_ value: T) {
         self.value = value
     }
-    // MARK: Functions
+    // MARK: Helpers
     
     /// Creates and adds an observer to the observable.
     ///

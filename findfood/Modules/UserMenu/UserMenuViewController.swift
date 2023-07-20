@@ -11,24 +11,28 @@ class UserMenuViewController: UIViewController {
     // MARK: Views
     private lazy var userEmailTextField: UITextField = {
         let userEmailTextField = UITextField(frame: .zero)
-        userEmailTextField.text = FirebaseManager.shared.user?.email ?? ""
-        userEmailTextField.textColor = .customTextColor
+        userEmailTextField.text = FirebaseManager.shared.user?.email ?? .empty
+        userEmailTextField.textColor = UIColor(named: "CustomLabel")
         return userEmailTextField
     }()
     
     private lazy var favouritesButton: UIButton = {
         let favouritesButton = UIButton(frame: .zero)
         favouritesButton.addTarget(self, action: #selector(favouritesClicked), for: .touchUpInside)
-        favouritesButton.backgroundColor = .systemGray
-        favouritesButton.setTitle("Favourites", for: .normal)
+        favouritesButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        favouritesButton.setTitle(Constant.ViewText.favouritesTitle, for: .normal)
+        favouritesButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        favouritesButton.layer.cornerRadius = 8.0
         return favouritesButton
     }()
     
     private lazy var logoutButton: UIButton = {
         let logoutButton = UIButton(frame: .zero)
         logoutButton.addTarget(self, action: #selector(logoutClicked), for: .touchUpInside)
-        logoutButton.backgroundColor = .systemGray
-        logoutButton.setTitle("Logout", for: .normal)
+        logoutButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        logoutButton.setTitle(Constant.ViewText.logoutTitle, for: .normal)
+        logoutButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        logoutButton.layer.cornerRadius = 8.0
         return logoutButton
     }()
     // MARK: viewDidLoad
@@ -39,7 +43,7 @@ class UserMenuViewController: UIViewController {
     // MARK: init
     init() {
         super.init(nibName: nil, bundle: .main)
-        navigationItem.title = "User"
+        navigationItem.title = Constant.ViewText.userTitle
     }
     
     required init?(coder: NSCoder) {
@@ -48,9 +52,9 @@ class UserMenuViewController: UIViewController {
 }
 
 private extension UserMenuViewController {
-    // MARK: Functions
+    // MARK: Helpers
     func setupView() {
-        view.backgroundColor = .customBackgroundColor
+        view.backgroundColor = UIColor(named: "CustomBackground")
         view.addSubview(userEmailTextField)
         view.addSubview(favouritesButton)
         view.addSubview(logoutButton)
@@ -65,16 +69,16 @@ private extension UserMenuViewController {
         favouritesButton.setConstraint(
             centerX: view.centerXAnchor,
             centerY: view.centerYAnchor,
-            width: 100.0,
-            height: 50.0
+            width: 140.0,
+            height: 44.0
         )
         
         logoutButton.setConstraint(
             bottom: view.bottomAnchor,
             bottomConstraint: 35,
             centerX: view.centerXAnchor,
-            width: 100.0,
-            height: 50.0
+            width: 140.0,
+            height: 44.0
         )
     }
     

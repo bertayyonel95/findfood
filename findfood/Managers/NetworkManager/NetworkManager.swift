@@ -8,7 +8,7 @@
 import Foundation
 
 protocol Networking {
-    func request(request: RequestModel, at page: Int, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
+    func request(request: RequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
     func requestWithLocationID(request: LocationIDRequestModel, completion: @escaping (Result<LocationModel, APIError>) -> Void)
 }
 
@@ -25,14 +25,13 @@ class NetworkManager: Networking {
     init(session: URLSession = .shared) {
         self.session = session
     }
-    // MARK: Functions
+    // MARK: Helpers
     /// Request data with the provided request mode from the database.
     ///
     /// - Parameters:
     ///    - request: request model to be used to make a network request.
-    ///    - page: page number for the data.
-    func request(request: RequestModel, at page: Int, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
-        guard let generatedRequest = request.generateRequest(at: page) else { return }
+    func request(request: RequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
+        guard let generatedRequest = request.generateRequest() else { return }
         let task = session.dataTask(with: generatedRequest) { data, response, error in
             if error != nil || data == nil { completion(.failure(.unknownError)) }
             guard let data = data else { return }
@@ -42,19 +41,25 @@ class NetworkManager: Networking {
         }
         task.resume()
     }
+    
     func requestWithLocationID(request: LocationIDRequestModel, completion: @escaping (Result<LocationModel, APIError>) -> Void) {
         LoadingManager.shared.show()
         guard let generatedRequest = request.generateRequest(with: request.locationID) else { return }
         let task = session.dataTask(with: generatedRequest) { data, response, error in
             LoadingManager.shared.hide()
-            if error != nil || data == nil { completion(.failure(.unknownError)) }
+            if error != nil || data == nil {
+                completion(.failure(.unknownError))
+            }
             guard let data = data else { return }
             if let location = self.parseJSONSingle(data) {
                 completion(.success(location))
+            } else {
+                completion(.failure(.notFound))
             }
         }
         task.resume()
     }
+    
     /// Parses data retrieved from the network call. Parsed data is then used by the
     /// location models.
     ///

@@ -27,13 +27,13 @@ final class DetailController: UIViewController {
     
     private var nameLabel: UILabel = {
         let nameLabel = UILabel()
-        nameLabel.textColor = .customTextColor
+        nameLabel.textColor = UIColor(named: "CustomLabel")
         return nameLabel
     }()
     
     private var phoneLabel: UILabel = {
         let phoneLabel = UILabel()
-        phoneLabel.textColor = .customTextColor
+        phoneLabel.textColor = UIColor(named: "CustomLabel")
         return phoneLabel
     }()
     
@@ -41,14 +41,14 @@ final class DetailController: UIViewController {
         let addressLabel = UILabel()
         addressLabel.numberOfLines = 0
         addressLabel.lineBreakMode = .byWordWrapping
-        addressLabel.textColor = .customTextColor
+        addressLabel.textColor = UIColor(named: "CustomLabel")
         return addressLabel
     }()
     
     private var addressTitle: UILabel = {
         let addressTitle = UILabel()
-        addressTitle.text = "Address: "
-        addressTitle.textColor = .customTextColor
+        addressTitle.text = Constant.ViewText.addressLabel
+        addressTitle.textColor = UIColor(named: "CustomLabel")
         return addressTitle
     }()
     // MARK: viewDidLoad
@@ -70,10 +70,10 @@ final class DetailController: UIViewController {
 }
 
 private extension DetailController {
-    // MARK: Functions
+    // MARK: Helpers
     func configure(with viewModel: HomeCollectionViewCellViewModel) {
-        nameLabel.text = "Name: \(viewModel.name)"
-        phoneLabel.text = "Phone: \(viewModel.phone)"
+        nameLabel.text = Constant.ViewText.nameLabel + viewModel.name
+        phoneLabel.text = Constant.ViewText.phoneLabel + viewModel.phone
         addressLabel.text = "\(viewModel.address.joined(separator: ", "))"
         imageView.sd_setImage(with: URL(string: viewModel.image_url))
         
@@ -82,7 +82,7 @@ private extension DetailController {
     func setupViews() {
         view.addSubview(scrollView)
         scrollView.contentSize = CGSize(width: view.frame.size.width, height: view.frame.size.height*2)
-        scrollView.backgroundColor = .customBackgroundColor
+        scrollView.backgroundColor = UIColor(named: "CustomBackground")
         scrollView.addSubview(imageView)
         scrollView.addSubview(nameLabel)
         scrollView.addSubview(phoneLabel)

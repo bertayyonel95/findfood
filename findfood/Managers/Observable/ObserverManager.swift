@@ -15,7 +15,7 @@ final class ObserverManager {
     private init() {
     }
     static let shared = ObserverManager()
-    // MARK: Functions
+    // MARK: Helpers
     /// Changes the favouriteStatusChanged boolean to opposite to trigger a notification.
     func changeStatus<T>(for observable: Observable<T>, with changedValue: T) {
         observable.value = changedValue

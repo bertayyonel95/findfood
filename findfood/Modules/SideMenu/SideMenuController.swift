@@ -18,20 +18,23 @@ class SideMenuController: UIViewController {
     
     private lazy var shouldLoginTextField: UILabel = {
         let shouldLoginTextField = UILabel(frame: .zero)
-        shouldLoginTextField.textColor = .customTextColor
+        shouldLoginTextField.textColor = .label
         shouldLoginTextField.numberOfLines = 0
         shouldLoginTextField.lineBreakMode = .byWordWrapping
         shouldLoginTextField.textAlignment = .center
-        
-        shouldLoginTextField.text = "You are not logged in. Please log in to continue"
+        shouldLoginTextField.layer.cornerRadius = 8.0
+        shouldLoginTextField.textColor = UIColor(named: "CustomLabel")
+        shouldLoginTextField.text = Constant.MessageString.notLoggedIn
         return shouldLoginTextField
     }()
     
     private lazy var loginButton: UIButton = {
         let loginButton = UIButton(frame: .zero)
         loginButton.addTarget(self, action: #selector(loginClicked), for: .touchUpInside)
-        loginButton.backgroundColor = .systemGray
-        loginButton.setTitle("Login", for: .normal)
+        loginButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        loginButton.setTitle(Constant.ViewText.logInTitle, for: .normal)
+        loginButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        loginButton.layer.cornerRadius = 8.0
         return loginButton
     }()
     // MARK: viewDidLoad
@@ -42,7 +45,7 @@ class SideMenuController: UIViewController {
     // MARK: init
     init() {
         super.init(nibName: nil, bundle: .main)
-        navigationItem.title = "Login"
+        navigationItem.title = Constant.ViewText.logInTitle
     }
     
     required init?(coder: NSCoder) {
@@ -51,9 +54,9 @@ class SideMenuController: UIViewController {
 }
 
 private extension SideMenuController {
-    // MARK: Functions
+    // MARK: Helpers
     func setupView() {
-        view.backgroundColor = .customBackgroundColor
+        view.backgroundColor = UIColor(named: "CustomBackground")
         view.addSubview(loginButton)
         view.addSubview(shouldLoginTextField)
         
@@ -64,8 +67,8 @@ private extension SideMenuController {
             bottomConstraint: .zero,
             trailingConstraint: .zero,
             centerX: view.centerXAnchor,
-            width: 100.0,
-            height: 50.0
+            width: 140.0,
+            height: 44.0
         )
         
         shouldLoginTextField.setConstraint(

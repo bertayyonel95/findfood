@@ -15,7 +15,7 @@ protocol ObjectSaveable {
 class UserDefaultsManager: ObjectSaveable {
     // MARK: Singleton Declaration
     static let shared: UserDefaultsManager = .init()
-    // MARK: Functions
+    // MARK: Helpers
     /// Sets an object to the UserDefaults.
     func setObject<Object>(_ object: Object, forKey: String) throws where Object : Encodable {
         let encoder = JSONEncoder()

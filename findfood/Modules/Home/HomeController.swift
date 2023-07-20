@@ -7,17 +7,20 @@
 
 import UIKit
 import SDWebImage
+
 // MARK: - HomeController
 final class HomeController: UIViewController {
+    
     // MARK: Typealias
     typealias DataSource = UICollectionViewDiffableDataSource<Section, HomeCollectionViewCellViewModel>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>
+    
     // MARK: Properties
     private var viewModel: HomeViewModelInput
-    lazy var slideInTransitioningDelegate = SlideInPresentationManager()
+    private lazy var slideInTransitioningDelegate = SlideInPresentationManager()
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
-    private var page = 0
+    private var page: Int
     private var isSlideMenuPresented = false
     private enum LastRequest {
         case byLocation
@@ -27,11 +30,14 @@ final class HomeController: UIViewController {
     private var likedLocations: [String] = []
     private var lastRequest: LastRequest = LastRequest.byLocation
     private lazy var slideInMenuPadding: CGFloat = self.view.frame.width * 0.30
+    
     // MARK: Views
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar(frame: .zero)
-        searchBar.searchTextField.placeholder = "Enter a location"
+        searchBar.searchTextField.placeholder = Constant.ViewText.searchBarPlaceHolder
         searchBar.showsBookmarkButton = true
+        searchBar.backgroundImage = UIImage()
+        searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         searchBar.setImage(UIImage(systemName: "location.fill"), for: .bookmark, state: .normal)
         searchBar.delegate = self
         return searchBar
@@ -39,13 +45,14 @@ final class HomeController: UIViewController {
     
     private lazy var byLocationButton: UIButton = {
         let byLocationButton = UIButton(frame: .zero)
-        byLocationButton.setTitle("by location", for: .normal)
+        byLocationButton.setTitle(Constant.ViewText.byLocationTitle, for: .normal)
         byLocationButton.addTarget(self, action: #selector(byLocationClicked), for: .touchUpInside)
         return byLocationButton
     }()
     
     private lazy var containerView: UIView = {
         let view = UIView()
+        view.backgroundColor = UIColor(named: "CustomBackground")
         return view
     }()
     
@@ -58,22 +65,26 @@ final class HomeController: UIViewController {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: HomeCollectionViewCell.identifier)
         collectionView.delegate = self
         collectionView.keyboardDismissMode = .onDrag
-        collectionView.backgroundColor = UIColor.init(red: 213.0/255.0, green: 207.0/255.0, blue: 207.0/255.0, alpha: 1)
+        collectionView.backgroundColor = UIColor(named: "CustomBackground")
         return collectionView
     }()
+    
     // MARK: viewDidLoad
     override func viewDidLoad() {
         super.loadView()
         setupView()
     }
+    
     // MARK: viewWillAppear
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView.reloadData()
     }
+    
     // MARK: init
     init(viewModel: HomeViewModelInput) {
         self.viewModel = viewModel
+        self.page = 0
         super.init(nibName: nil, bundle: .main)
         self.viewModel.output = self
         ObserverManager.shared.favouriteStatusChanged.observe(on: self) { [self] _ in
@@ -85,6 +96,7 @@ final class HomeController: UIViewController {
             self.favouritesClicked()
         }
     }
+    
     // MARK: deinit
     deinit {
         ObserverManager.shared.removeObservers(for: ObserverManager.shared.favouriteStatusChanged)
@@ -122,8 +134,8 @@ private extension HomeController {
     }
     
     func setupView() {
-        view.backgroundColor = .customBackgroundColor
-        containerView.backgroundColor = .customBackgroundColor
+        view.backgroundColor = UIColor(named: "CustomBackground")
+        containerView.backgroundColor = UIColor(named: "CustomBackground")
         containerView.addSubview(searchBar)
         containerView.addSubview(collectionView)
         view.addSubview(containerView)
@@ -158,7 +170,7 @@ private extension HomeController {
             topConstraint: .zero,
             leadingConstraint: .zero,
             trailingConstraint: .zero,
-            height: 50.0
+            height: 44.0
         )
         
         let sideMenuButton = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal" ), style: .plain, target: self, action: #selector(self.popUpMenu))
@@ -171,7 +183,7 @@ private extension HomeController {
         lastRequest = LastRequest.bySearch
         SDImageCache.shared.clearMemory()
         SDImageCache.shared.clearDisk()
-        viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
+        viewModel.getBusinessList(for: searchBar.text ?? .empty, at: page)
         collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
     
@@ -219,25 +231,41 @@ extension HomeController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
         if indexPath[0] + 5 == viewModel.getDataSize() {
             page += 1
             switch lastRequest {
             case .bySearch:
-                viewModel.getBusinessList(for: searchBar.text ?? " ", at: page)
+                viewModel.getBusinessList(for: searchBar.text ?? .empty, at: page)
             case .byLocation:
                 viewModel.getBusinessListWithLocation(at: page)
             case .byFavourite:
                 return
             }
-                
         }
     }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension HomeController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) // Adjust the top and bottom values to specify the desired spacing
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        20
+        10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        10 // Adjust the value to specify the desired spacing between items within a row
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let totalWidth = collectionView.bounds.width
+        let totalHeight = collectionView.bounds.height
+        let itemHeight = totalHeight / 5
+        let itemWidth = totalWidth * 0.9
+        return CGSize(width: itemWidth, height: itemHeight)
     }
 }
 
@@ -285,20 +313,22 @@ extension HomeController: HomeCollectionViewCellViewDelegate {
             self.viewModel.dislikeLocation(with: viewModel) :
             self.viewModel.likeLocation(with: viewModel)
         } else {
-            ErrorMessageManager.shared.showErrorMessage(
+            AlertHandler.shared.show(
+                errorMessage: Constant.MessageString.logInNeeded,
                 in: self,
-                title: "Log In",
-                errorMessage: "You need to be logged in to favourite",
-                actions: [
-                    UIAlertAction(title: "Log In", style: .default) { _ in
-                        let loginViewModel = LoginViewModel()
-                        let loginVC = LogInController(viewModel: loginViewModel)
-                        self.slideInTransitioningDelegate.direction = .bottom
-                        loginVC.transitioningDelegate = self.slideInTransitioningDelegate
-                        loginVC.modalPresentationStyle = .custom
-                        self.present(loginVC, animated: true, completion: nil)
-                    }
+                with: Constant.ViewText.logInTitle,
+                actionType: [
+                    .login,
+                    .cancel
                 ])
+            AlertHandler.shared.confirmButtonHandler = {
+                let loginViewModel = LoginViewModel()
+                let loginVC = LogInController(viewModel: loginViewModel)
+                self.slideInTransitioningDelegate.direction = .bottom
+                loginVC.transitioningDelegate = self.slideInTransitioningDelegate
+                loginVC.modalPresentationStyle = .custom
+                self.present(loginVC, animated: true, completion: nil)
+            }
         }
     }
 }

@@ -30,16 +30,12 @@ class RequestModel {
 }
 
 extension RequestModel {
-    // MARK: Functions
+    // MARK: Helpers
     
     /// Generates a request for the network call
     ///
-    /// - Parameters:
-    ///    - page: takes a page number to calculate an offset, then the offset is used to generate a request.
-    ///
     /// - Returns: A URL request to be used to make a network call.
-    func generateRequest(at page: Int) -> URLRequest? {
-        calculateOffset(at: page)
+    func generateRequest() -> URLRequest? {
         guard let url = generateURL(with: generateQueryItems()) else { return nil }
         var request = URLRequest(url: url)
         headers.forEach { header in
@@ -54,18 +50,6 @@ extension RequestModel {
             request.addValue(header.value, forHTTPHeaderField: header.key)
         }
         return request
-    }
-    /// Calculates and offset to make the bulk data act as paged.
-    ///
-    /// - Parameters:
-    ///    - page: the current "page" is required so that the next offset can be calculated.
-    func calculateOffset(at page: Int) {
-        offset = limit*page
-    }
-    /// Resets offset to 0 in order to make a new network call start from
-    /// the first result.
-    func resetOffset() {
-        offset = 0
     }
 }
 private extension RequestModel {

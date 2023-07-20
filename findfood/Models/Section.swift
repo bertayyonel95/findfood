@@ -18,7 +18,7 @@ final class Section: Hashable {
     public init(location: HomeCollectionViewCellViewModel) {
         self.location = location
     }
-    // MARK: Functions
+    // MARK: Helpers
     func hash(into hasher: inout Hasher) {
         hasher.combine(location.name)
     }

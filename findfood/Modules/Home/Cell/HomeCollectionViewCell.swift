@@ -22,6 +22,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     private lazy var likeButton: UIButton = {
         let button = UIButton()
         button.tintColor = .red
+        button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         button.setImage(UIImage(systemName: "heart"), for: .normal)
         button.addTarget(self, action: #selector(likeButtonPressed), for: .touchUpInside)
         return button
@@ -39,20 +40,20 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         name.font = name.font.withSize(19)
         name.numberOfLines = 0
         name.lineBreakMode = .byWordWrapping
-        name.textColor = .black
+        name.textColor = UIColor(named: "CustomLabel")
         return name
     }()
     
     private let rating: UILabel = {
         let rating = UILabel(frame: .zero)
-        rating.textColor = .black
+        rating.textColor = UIColor(named: "CustomLabel")
         return rating
     }()
     
     private let price: UILabel = {
         let price = UILabel(frame: .zero)
         price.font = price.font.withSize(16)
-        price.textColor = .black
+        price.textColor = UIColor(named: "CustomLabel")
         return price
     }()
     
@@ -65,6 +66,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         lastVisited.text = .empty
         return lastVisited
     }()
+    
     // MARK: init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,7 +76,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    // MARK: Functions
+    // MARK: Helpers
     override func prepareForReuse() {
         name.text = nil
         rating.text = nil
@@ -95,7 +97,7 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         price.text = viewModel.price
         
         if !viewModel.lastVisited.isEmpty {
-            lastVisited.text = "Last visited on: " + viewModel.lastVisited
+            lastVisited.text = Constant.MessageString.lastVisitedOn + viewModel.lastVisited
             lastVisited.isEnabled = true
         }
         
@@ -118,12 +120,17 @@ private extension HomeCollectionViewCell {
     }
     
     func setupView() {
-        self.backgroundColor = .customBackgroundColor
-        name.textColor = .customTextColor
-        rating.textColor = .customTextColor
-        price.textColor = .customTextColor
-        self.clipsToBounds = true
+        self.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        self.layer.cornerRadius = 8.0
+        
+        self.layer.masksToBounds = false
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowOpacity = 0.3
+        self.layer.shadowOffset = CGSize(width: 0, height: 2)
+        self.layer.shadowRadius = 4
+        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.contentView.layer.cornerRadius).cgPath
 
+        
         addSubview(imageView)
         addSubview(name)
         addSubview(likeButton)
@@ -134,10 +141,10 @@ private extension HomeCollectionViewCell {
         imageView.setConstraint(
             top: topAnchor,
             leading: leadingAnchor,
-            topConstraint: 5,
-            leadingConstraint: 5,
+            topConstraint: .zero,
+            leadingConstraint: .zero,
             width: 120,
-            height: 120
+            height: self.bounds.height
         )
         
         name.setConstraint(
@@ -154,8 +161,8 @@ private extension HomeCollectionViewCell {
             trailing: trailingAnchor,
             trailingConstraint: 15,
             centerY: centerYAnchor,
-            width: 44,
-            height: 44
+            width: 50,
+            height: 50
         )
         
         rating.setConstraint(

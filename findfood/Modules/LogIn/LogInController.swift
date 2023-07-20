@@ -15,34 +15,58 @@ class LogInController: UIViewController {
     // MARK: Views
     private lazy var emailField: UITextField = {
         let emailField = UITextField(frame: .zero)
-        emailField.backgroundColor = .systemGray
+        emailField.backgroundColor = .secondarySystemBackground
+        emailField.setLeftPaddingPoints(2.0)
+        emailField.setRightPaddingPoints(2.0)
         emailField.autocapitalizationType = .none
         emailField.autocorrectionType = .no
         emailField.keyboardType = .emailAddress
+        emailField.layer.cornerRadius = 8.0
+        emailField.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        emailField.layer.borderWidth = 1.0
+        emailField.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        emailField.placeholder = Constant.ViewText.emailFieldPlaceHolder
         return emailField
     }()
     
     private lazy var passwordField: UITextField = {
         let passwordField = UITextField(frame: .zero)
-        passwordField.backgroundColor = .systemGray
+        passwordField.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        passwordField.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        passwordField.layer.borderWidth = 1.0
+        passwordField.setLeftPaddingPoints(2.0)
+        passwordField.setRightPaddingPoints(2.0)
         passwordField.autocapitalizationType = .none
         passwordField.autocorrectionType = .no
+        passwordField.isSecureTextEntry = true
+        passwordField.layer.cornerRadius = 8.0
+        passwordField.backgroundColor =  UIColor(named: "CustomSecondaryBackground")
+        passwordField.placeholder = Constant.ViewText.passwordFieldPlaceHolder
         return passwordField
     }()
     
     private lazy var loginButton: UIButton = {
         let loginButton = UIButton(frame: .zero)
-        loginButton.backgroundColor = .systemGray
+        loginButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
         loginButton.addTarget(self, action: #selector(loginClicked), for: .touchUpInside)
-        loginButton.setTitle("Login", for: .normal)
+        loginButton.setTitle(Constant.ViewText.logInTitle, for: .normal)
+        loginButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        loginButton.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        loginButton.layer.borderWidth = 1.0
+        loginButton.layer.cornerRadius = 8.0
         return loginButton
     }()
     
     private lazy var signupButton: UIButton = {
         let signupButton = UIButton(frame: .zero)
-        signupButton.backgroundColor = .systemGray
+        signupButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
         signupButton.addTarget(self, action: #selector(signupClicked), for: .touchUpInside)
-        signupButton.setTitle("Sign Up", for: .normal)
+        signupButton.setTitle(Constant.ViewText.signUpTitle, for: .normal)
+        signupButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        signupButton.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        signupButton.layer.borderWidth = 1.0
+        signupButton.layer.cornerRadius = 5.0
+        
         return signupButton
     }()
     // MARK: viewDidLoad
@@ -67,9 +91,10 @@ class LogInController: UIViewController {
 }
 
 private extension LogInController {
-    // MARK: Functions
+    // MARK: Helpers
     func setupView() {
-        view.backgroundColor = .customBackgroundColor
+        view.backgroundColor = UIColor(named: "CustomBackground")
+        view.layer.cornerRadius = 18.0
         view.addSubview(emailField)
         view.addSubview(passwordField)
         view.addSubview(loginButton)
@@ -82,7 +107,7 @@ private extension LogInController {
             topConstraint: 120.0,
             leadingConstraint: 45.0,
             trailingConstraint: 45.0,
-            height: 50.0
+            height: 44.0
         )
         
         passwordField.setConstraint(
@@ -92,31 +117,35 @@ private extension LogInController {
             topConstraint: 25.0,
             leadingConstraint: 45.0,
             trailingConstraint: 45.0,
-            height: 50.0
+            height: 44.0
         )
 
         loginButton.setConstraint(
             top: passwordField.bottomAnchor,
             topConstraint: 15.0,
             bottomConstraint: 10.0,
-            centerX: view.centerXAnchor
+            centerX: view.centerXAnchor,
+            width: 140.0,
+            height: 44.0
         )
         
         signupButton.setConstraint(
             top: loginButton.bottomAnchor,
             topConstraint: 15.0,
             bottomConstraint: 10.0,
-            centerX: view.centerXAnchor
+            centerX: view.centerXAnchor,
+            width: 140.0,
+            height: 44.0
         )
     }
     
     @objc func loginClicked() {
-        viewModel.logInUser(email: emailField.text ?? " ", password: passwordField.text ?? " ")
+        viewModel.logInUser(email: emailField.text ?? .empty, password: passwordField.text ?? .empty)
         self.view.endEditing(true)
     }
     
     @objc func signupClicked() {
-        viewModel.registerUser(email: emailField.text ?? " ", password: passwordField.text ?? " ")
+        viewModel.registerUser(email: emailField.text ?? .empty, password: passwordField.text ?? .empty)
         self.view.endEditing(true)
     }
     
@@ -161,7 +190,9 @@ private extension LogInController {
 // MARK: - LoginViewModelOutput
 extension LogInController: LoginViewModelOutput {
     func showErrorMessage(errorMessage: String) {
-        ErrorMessageManager.shared.showErrorMessage(in: self, title: "Error", errorMessage: errorMessage, actions: [])
+        AlertHandler.shared.show(errorMessage: errorMessage, in: self, with: Constant.ViewText.errorTitle, actionType: [.confirm])
+        AlertHandler.shared.cancelButtonHandler = {
+        }
     }
     
     func popController() {

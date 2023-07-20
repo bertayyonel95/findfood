@@ -30,12 +30,12 @@ extension LocationModel {
     // MARK: init
     init(with locationData: LocationData) {
         self.locationID = locationData.id
-        self.locationName = locationData.name ?? ""
+        self.locationName = locationData.name ?? .empty
         self.locationRating = String(locationData.rating ?? .zero)
-        self.locatinImageLink = locationData.image_url ?? ""
-        self.locationPrice = locationData.price ?? ""
+        self.locatinImageLink = locationData.image_url ?? .empty
+        self.locationPrice = locationData.price ?? .empty
         self.locationCategories = locationData.categories ?? []
-        self.display_phone = locationData.display_phone ?? ""
+        self.display_phone = locationData.display_phone ?? .empty
         self.display_address = locationData.location?.display_address ?? []
     }
 }

@@ -11,15 +11,16 @@ extension UIColor {
     static var customBackgroundColor: UIColor {
         return UIColor { (traits) -> UIColor in
             return traits.userInterfaceStyle == .dark ?
-            UIColor.black :
-            UIColor.white
+            .black :
+            .white
         }
     }
+    
     static var customTextColor: UIColor {
         return UIColor { (traits) -> UIColor in
             return traits.userInterfaceStyle == .dark ?
-            UIColor.white :
-            UIColor.black
+            .white :
+            .black
         }
     }
 }
