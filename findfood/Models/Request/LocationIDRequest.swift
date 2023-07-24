@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-final class LocationIDRequestModel: RequestModel {
+final class LocationIDRequest: RequestModel {
     // MARK: - Properties
     let locationID: String
     override var parameters: [String : Any?] {

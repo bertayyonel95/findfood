@@ -8,19 +8,14 @@
 import Foundation
 
 protocol Networking {
-    func request(request: RequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
-    func requestWithLocationID(request: LocationIDRequestModel, completion: @escaping (Result<LocationModel, APIError>) -> Void)
+    func request<T: Decodable>(request: RequestModel, completion: @escaping (Result<T, APIError>) -> Void)
+    func requestWithLocationID(request: LocationIDRequest, completion: @escaping (Result<Location, APIError>) -> Void)
 }
 
 // MARK: - NetworkManager
 class NetworkManager: Networking {
     // MARK: Properties
     private let session: URLSession
-    private let headers = [
-      "accept": "application/json",
-      "Authorization": "Bearer " + Constant.API.key
-    ]
-    var delegate: HomeViewModel?
     // MARK: Init
     init(session: URLSession = .shared) {
         self.session = session
@@ -30,19 +25,28 @@ class NetworkManager: Networking {
     ///
     /// - Parameters:
     ///    - request: request model to be used to make a network request.
-    func request(request: RequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
+    func request<T: Decodable>(request: RequestModel, completion: @escaping (Result<T, APIError>) -> Void) {
         guard let generatedRequest = request.generateRequest() else { return }
+        let parser = ParseJSON<T>()
         let task = session.dataTask(with: generatedRequest) { data, response, error in
-            if error != nil || data == nil { completion(.failure(.unknownError)) }
-            guard let data = data else { return }
-            if let location = self.parseJSON(data) {
-                completion(.success(location))
+            if let error {
+                completion(.failure(.unknownError))
+            }
+            guard let data else {
+                completion(.failure(.unknownError))
+                return
+            }
+            do {
+                let convertedData = try parser.parseJSON(data: data)
+                completion(.success(convertedData))
+            } catch {
+                completion(.failure(.unknownError))
             }
         }
         task.resume()
     }
     
-    func requestWithLocationID(request: LocationIDRequestModel, completion: @escaping (Result<LocationModel, APIError>) -> Void) {
+    func requestWithLocationID(request: LocationIDRequest, completion: @escaping (Result<Location, APIError>) -> Void) {
         LoadingManager.shared.show()
         guard let generatedRequest = request.generateRequest(with: request.locationID) else { return }
         let task = session.dataTask(with: generatedRequest) { data, response, error in
@@ -67,13 +71,14 @@ class NetworkManager: Networking {
     ///    - locationData: data to be parsed.
     ///
     /// - Returns: an array with LocationModels.
-    func parseJSON(_ locationData: Data) -> [LocationModel]? {
+    func parseJSON(_ locationData: Data) -> [Location]? /* -> T? */ {
         let decoder = JSONDecoder()
-        var locationArray: [LocationModel] = []
+        var locationArray: [Location] = []
         do {
             let decodedData = try decoder.decode(Business.self, from: locationData)
+            print(decodedData.total)
             for business in decodedData.businesses {
-                let location = LocationModel(with: business)
+                let location = Location(with: business)
                 locationArray.append(location)
             }
             return locationArray
@@ -83,11 +88,11 @@ class NetworkManager: Networking {
         }
     }
     
-    func parseJSONSingle(_ locationData: Data) -> LocationModel? {
+    func parseJSONSingle(_ locationData: Data) -> Location? {
         let decoder = JSONDecoder()
         do {
             let decodedData = try decoder.decode(LocationData.self, from: locationData)
-            let location = LocationModel(with: decodedData)
+            let location = Location(with: decodedData)
             return location
         } catch let error {
             print(error.localizedDescription + "parse error single")

@@ -4,6 +4,7 @@
 //
 //  Created by Bertay Yönel on 22.03.2023.
 //
+// swiftlint:disable identifier_name
 
 import Foundation
 import Firebase
@@ -13,9 +14,7 @@ import FirebaseFirestore
 
 // MARK: - FirebaseAuthManagerDelegate
 protocol FirebaseAuthManagerDelegate: AnyObject {
-    func onSuccessfulSingUp()
-    func onSuccessfulLogIn()
-    func onError(errorMessage: String)
+    func Firebase(_ manager: FirebaseManager, didCompleteWith: Bool, error: Error?)
 }
 
 // MARK: - FirebaseManager
@@ -26,12 +25,12 @@ class FirebaseManager {
     private var likedLocations: [String] = []
     
     static let shared = FirebaseManager()
-    var delegate: FirebaseAuthManagerDelegate?
+    weak var delegate: FirebaseAuthManagerDelegate?
     var database = Firestore.firestore()
     var user: User?
     
     
-    // MARK: Class init and singleton decleration
+    // MARK: Init
     private init() {
         if self.userExists() {
             self.getCurrentUser()
@@ -49,10 +48,10 @@ class FirebaseManager {
         auth.createUser(withEmail: withEmail, password: withPassword) { authResult, error in
             if error != nil {
                 let errorCode = AuthErrorCode(_nsError: error! as NSError)
-                self.errorHandling(errorCode: errorCode)
+                self.delegate?.Firebase(self, didCompleteWith: false, error: error)
             } else {
                 self.addUserToDatabase(userID: authResult?.user.uid ?? .empty)
-                self.delegate?.onSuccessfulSingUp()
+                self.delegate?.Firebase(self, didCompleteWith: true, error: nil)
                 self.userSignIn(withEmail: withEmail, withPassword: withPassword)
                 self.getCurrentUser()
                 self.getFavouritesFromUser()
@@ -70,11 +69,11 @@ class FirebaseManager {
             if error != nil {
                 let nsError = error as? NSError
                 let errorCode = AuthErrorCode(_nsError: nsError ?? NSError())
-                self.errorHandling(errorCode: errorCode)
+                self.delegate?.Firebase(self, didCompleteWith: false, error: error)
             } else {
                 self.getCurrentUser()
                 self.getFavouritesFromUser()
-                self.delegate?.onSuccessfulLogIn()
+                self.delegate?.Firebase(self, didCompleteWith: true, error: nil)
             }
         }
     }
@@ -87,16 +86,8 @@ class FirebaseManager {
             ObserverManager.shared.changeStatus(for: ObserverManager.shared.favouriteStatusChanged, with: !observerValue)
             self.clearData()
         } catch let signOutError {
-            self.delegate?.onError(errorMessage: signOutError.localizedDescription)
+            self.delegate?.Firebase(self, didCompleteWith: false, error: signOutError)
         }
-    }
-    
-    /// Creates a personlized error message according to the error.
-    ///
-    /// - Parameters:
-    ///    - errorCode: contains the description of the error.
-    func errorHandling(errorCode: AuthErrorCode) {
-        self.delegate?.onError(errorMessage: errorCode.localizedDescription)
     }
     
     /// Checks if the given location is liked by the user.
@@ -148,7 +139,7 @@ class FirebaseManager {
     
     /// Assigns the user to be the current user.
     func getCurrentUser() {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = auth.currentUser else {
             return
         }
         self.user = user
@@ -159,7 +150,7 @@ class FirebaseManager {
     /// - Parameters:
     ///    - locationID: ID of the location that the user wants to add to favourite.
     func likeLocation(locationID: String) {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = auth.currentUser else {
             return
         }
         let userRef = database.document(Constant.FirebaseString.userPath + user.uid)
@@ -172,7 +163,7 @@ class FirebaseManager {
     /// - Parameters:
     ///    - locationID: ID of the location that the user wants to remove from favourites.
     func dislikeLocation(locationID: String) {
-        guard let user = Auth.auth().currentUser else {
+        guard let user = auth.currentUser else {
             return
         }
         let userRef = database.document(Constant.FirebaseString.userPath + user.uid)
@@ -184,7 +175,7 @@ class FirebaseManager {
     ///
     /// - Returns: A boolean according to the existence of a user.
     func userExists() -> Bool {
-        if Auth.auth().currentUser != nil {
+        if auth.currentUser != nil {
             return true
         } else {
             return false

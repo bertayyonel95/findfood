@@ -9,6 +9,7 @@ import UIKit
 // MARK: - SideMenuController
 class SideMenuController: UIViewController {
     // MARK: Properties
+    private var loginRouter: LoginRouting = LoginRouter()
     lazy var slideInPresentationManager = SlideInPresentationManager()
     // MARK: Views
     private lazy var containerView: UIView = {
@@ -23,17 +24,17 @@ class SideMenuController: UIViewController {
         shouldLoginTextField.lineBreakMode = .byWordWrapping
         shouldLoginTextField.textAlignment = .center
         shouldLoginTextField.layer.cornerRadius = 8.0
-        shouldLoginTextField.textColor = UIColor(named: "CustomLabel")
+        shouldLoginTextField.textColor = .customLabelColor
         shouldLoginTextField.text = Constant.MessageString.notLoggedIn
         return shouldLoginTextField
     }()
     
     private lazy var loginButton: UIButton = {
         let loginButton = UIButton(frame: .zero)
-        loginButton.addTarget(self, action: #selector(loginClicked), for: .touchUpInside)
-        loginButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        loginButton.addTarget(self, action: #selector(loginPressed), for: .touchUpInside)
+        loginButton.backgroundColor = .customSecondaryBackgroundColor
         loginButton.setTitle(Constant.ViewText.logInTitle, for: .normal)
-        loginButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        loginButton.setTitleColor(.customLabelColor, for: .normal)
         loginButton.layer.cornerRadius = 8.0
         return loginButton
     }()
@@ -56,7 +57,7 @@ class SideMenuController: UIViewController {
 private extension SideMenuController {
     // MARK: Helpers
     func setupView() {
-        view.backgroundColor = UIColor(named: "CustomBackground")
+        view.backgroundColor = .customBackgroundColor
         view.addSubview(loginButton)
         view.addSubview(shouldLoginTextField)
         
@@ -83,16 +84,11 @@ private extension SideMenuController {
         )
     }
     
-    @objc func loginClicked() {
-        let loginViewModel = LoginViewModel()
-        let loginVC = LogInController(viewModel: loginViewModel)
-        slideInPresentationManager.direction = .bottom
-        loginVC.transitioningDelegate = slideInPresentationManager
-        loginVC.modalPresentationStyle = .custom
-        self.present(loginVC, animated: true, completion: nil)
+    @objc func loginPressed() {
+        loginRouter.navigateToLogin(self)
     }
     
-    @objc func logoutClicked() {
+    @objc func logoutPressed() {
         FirebaseManager.shared.userSignOut()
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }

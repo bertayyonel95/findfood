@@ -20,6 +20,7 @@ final class HomeController: UIViewController {
     private lazy var slideInTransitioningDelegate = SlideInPresentationManager()
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
+    private var loginRouter: LoginRouting = LoginRouter()
     private var page: Int
     private var isSlideMenuPresented = false
     private enum LastRequest {
@@ -46,13 +47,13 @@ final class HomeController: UIViewController {
     private lazy var byLocationButton: UIButton = {
         let byLocationButton = UIButton(frame: .zero)
         byLocationButton.setTitle(Constant.ViewText.byLocationTitle, for: .normal)
-        byLocationButton.addTarget(self, action: #selector(byLocationClicked), for: .touchUpInside)
+        byLocationButton.addTarget(self, action: #selector(byLocationPressed), for: .touchUpInside)
         return byLocationButton
     }()
     
     private lazy var containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(named: "CustomBackground")
+        view.backgroundColor = .customBackgroundColor
         return view
     }()
     
@@ -65,7 +66,7 @@ final class HomeController: UIViewController {
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: HomeCollectionViewCell.identifier)
         collectionView.delegate = self
         collectionView.keyboardDismissMode = .onDrag
-        collectionView.backgroundColor = UIColor(named: "CustomBackground")
+        collectionView.backgroundColor = .customBackgroundColor
         return collectionView
     }()
     
@@ -87,20 +88,13 @@ final class HomeController: UIViewController {
         self.page = 0
         super.init(nibName: nil, bundle: .main)
         self.viewModel.output = self
-        ObserverManager.shared.favouriteStatusChanged.observe(on: self) { [self] _ in
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
-        ObserverManager.shared.favouritesClicked.observe(on: self) { [self] _ in
-            self.favouritesClicked()
-        }
+        setupObservables()
     }
     
     // MARK: deinit
     deinit {
         ObserverManager.shared.removeObservers(for: ObserverManager.shared.favouriteStatusChanged)
-        ObserverManager.shared.removeObservers(for: ObserverManager.shared.favouritesClicked)
+        ObserverManager.shared.removeObservers(for: ObserverManager.shared.favouritesPressed)
     }
 
     required init?(coder: NSCoder) {
@@ -110,6 +104,17 @@ final class HomeController: UIViewController {
 
 // MARK: - Helpers
 private extension HomeController {
+    func setupObservables() {
+        ObserverManager.shared.favouriteStatusChanged.observe(on: self) { [self] _ in
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
+        ObserverManager.shared.favouritesPressed.observe(on: self) { [self] _ in
+            self.favouritesPressed()
+        }
+    }
+    
     func applySnapshot(animatingDifferences: Bool = true) {
         var snapshot = Snapshot()
         snapshot.appendSections(viewModel.getSections())
@@ -134,8 +139,9 @@ private extension HomeController {
     }
     
     func setupView() {
-        view.backgroundColor = UIColor(named: "CustomBackground")
-        containerView.backgroundColor = UIColor(named: "CustomBackground")
+        self.title = "Home"
+        view.backgroundColor = .customBackgroundColor
+        containerView.backgroundColor = .customBackgroundColor
         containerView.addSubview(searchBar)
         containerView.addSubview(collectionView)
         view.addSubview(containerView)
@@ -178,8 +184,8 @@ private extension HomeController {
     }
     
     @objc
-    func searchClicked() {
-        page = 0
+    func searchPressed() {
+        page = .zero
         lastRequest = LastRequest.bySearch
         SDImageCache.shared.clearMemory()
         SDImageCache.shared.clearDisk()
@@ -202,11 +208,11 @@ private extension HomeController {
     }
     
     @objc
-    func byLocationClicked() {
+    func byLocationPressed() {
         print("by location clicked")
     }
     
-    func favouritesClicked() {
+    func favouritesPressed() {
         lastRequest = .byFavourite
         viewModel.getBusinessListWithFavourites(favouriteLocations: FirebaseManager.shared.returnLikedLocations())
         DispatchQueue.main.async {
@@ -232,7 +238,9 @@ extension HomeController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
-        if indexPath[0] + 5 == viewModel.getDataSize() {
+        if viewModel.isLoadingData { return }
+
+        if indexPath[0] + 6 == viewModel.getDataSize() {
             page += 1
             switch lastRequest {
             case .bySearch:
@@ -249,7 +257,7 @@ extension HomeController: UICollectionViewDelegate {
 // MARK: - UICollectionViewDelegateFlowLayout
 extension HomeController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) // Adjust the top and bottom values to specify the desired spacing
+        UIEdgeInsets(top: 10, left: .zero, bottom: 10, right: .zero) // Adjust the top and bottom values to specify the desired spacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -271,7 +279,7 @@ extension HomeController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - HomeViewModelOutput
 extension HomeController: HomeViewModelOutput {
-    func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [LocationModel]) {
+    func home(_ viewModel: HomeViewModelInput, businessListDidLoad list: [Location]) {
         // TODO: Implement
     }
     
@@ -285,21 +293,21 @@ extension HomeController: HomeViewModelOutput {
 
 // MARK: - UISearchBarDelegate
 extension HomeController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchClicked()
+    func searchBarSearchButtonPressed(_ searchBar: UISearchBar) {
+        searchPressed()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.count > 3 {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                self.searchClicked()
+                self.searchPressed()
             }
         }
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         lastRequest = LastRequest.byLocation
-        page = 0
+        page = .zero
         viewModel.getLocationData()
         collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
@@ -322,12 +330,13 @@ extension HomeController: HomeCollectionViewCellViewDelegate {
                     .cancel
                 ])
             AlertHandler.shared.confirmButtonHandler = {
-                let loginViewModel = LoginViewModel()
-                let loginVC = LogInController(viewModel: loginViewModel)
-                self.slideInTransitioningDelegate.direction = .bottom
-                loginVC.transitioningDelegate = self.slideInTransitioningDelegate
-                loginVC.modalPresentationStyle = .custom
-                self.present(loginVC, animated: true, completion: nil)
+//                let loginViewModel = LoginViewModel()
+//                let loginVC = LogInController(viewModel: loginViewModel)
+//                self.slideInTransitioningDelegate.direction = .bottom
+//                loginVC.transitioningDelegate = self.slideInTransitioningDelegate
+//                loginVC.modalPresentationStyle = .custom
+//                self.present(loginVC, animated: true, completion: nil)
+                self.loginRouter.navigateToLogin(self)
             }
         }
     }

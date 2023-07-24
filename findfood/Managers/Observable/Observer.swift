@@ -10,10 +10,13 @@ import Foundation
 final class Observer<T> {
     // MARK: Typealias
     typealias ObserverBlock = (T) -> Void
+    
     // MARK: Properties
-    public weak var observer: AnyObject?
+    weak var observer: AnyObject?
+    
     var queue: DispatchQueue
     var block: ObserverBlock
+    
     // MARK: init
     init(observer: AnyObject, queue: DispatchQueue, block: @escaping ObserverBlock) {
         self.observer = observer

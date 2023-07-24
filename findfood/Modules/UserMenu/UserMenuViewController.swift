@@ -9,29 +9,29 @@ import UIKit
 // MARK: - UserMenuViewController
 class UserMenuViewController: UIViewController {
     // MARK: Views
-    private lazy var userEmailTextField: UITextField = {
-        let userEmailTextField = UITextField(frame: .zero)
-        userEmailTextField.text = FirebaseManager.shared.user?.email ?? .empty
-        userEmailTextField.textColor = UIColor(named: "CustomLabel")
-        return userEmailTextField
+    private lazy var userEmailLabel: UILabel = {
+        let userEmailLabel = UILabel(frame: .zero)
+        userEmailLabel.text = FirebaseManager.shared.user?.email ?? .empty
+        userEmailLabel.textColor = .customLabelColor
+        return userEmailLabel
     }()
     
     private lazy var favouritesButton: UIButton = {
         let favouritesButton = UIButton(frame: .zero)
-        favouritesButton.addTarget(self, action: #selector(favouritesClicked), for: .touchUpInside)
-        favouritesButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        favouritesButton.addTarget(self, action: #selector(favouritesPressed), for: .touchUpInside)
+        favouritesButton.backgroundColor = .customSecondaryBackgroundColor
         favouritesButton.setTitle(Constant.ViewText.favouritesTitle, for: .normal)
-        favouritesButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        favouritesButton.setTitleColor(.customLabelColor, for: .normal)
         favouritesButton.layer.cornerRadius = 8.0
         return favouritesButton
     }()
     
     private lazy var logoutButton: UIButton = {
         let logoutButton = UIButton(frame: .zero)
-        logoutButton.addTarget(self, action: #selector(logoutClicked), for: .touchUpInside)
-        logoutButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        logoutButton.addTarget(self, action: #selector(logoutPressed), for: .touchUpInside)
+        logoutButton.backgroundColor = .customSecondaryBackgroundColor
         logoutButton.setTitle(Constant.ViewText.logoutTitle, for: .normal)
-        logoutButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        logoutButton.setTitleColor(.customLabelColor, for: .normal)
         logoutButton.layer.cornerRadius = 8.0
         return logoutButton
     }()
@@ -54,12 +54,12 @@ class UserMenuViewController: UIViewController {
 private extension UserMenuViewController {
     // MARK: Helpers
     func setupView() {
-        view.backgroundColor = UIColor(named: "CustomBackground")
-        view.addSubview(userEmailTextField)
+        view.backgroundColor = .customBackgroundColor
+        view.addSubview(userEmailLabel)
         view.addSubview(favouritesButton)
         view.addSubview(logoutButton)
         
-        userEmailTextField.setConstraint(
+        userEmailLabel.setConstraint(
             top: view.topAnchor,
             leading: view.leadingAnchor,
             topConstraint: 55,
@@ -82,13 +82,13 @@ private extension UserMenuViewController {
         )
     }
     
-    @objc func logoutClicked() {
+    @objc func logoutPressed() {
         FirebaseManager.shared.userSignOut()
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     
-    @objc func favouritesClicked() {
-        ObserverManager.shared.changeStatus(for: ObserverManager.shared.favouritesClicked, with: !ObserverManager.shared.favouritesClicked.value)
+    @objc func favouritesPressed() {
+        ObserverManager.shared.changeStatus(for: ObserverManager.shared.favouritesPressed, with: !ObserverManager.shared.favouritesPressed.value)
         self.dismiss(animated: true)
     }
 }

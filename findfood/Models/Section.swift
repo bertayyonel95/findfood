@@ -7,10 +7,9 @@
 
 import Foundation
 
-
 final class Section: Hashable {
     // MARK: Properties
-    let location : HomeCollectionViewCellViewModel
+    let location: HomeCollectionViewCellViewModel
     static func == (lhs: Section, rhs: Section) -> Bool {
         lhs.location.name == rhs.location.name
     }

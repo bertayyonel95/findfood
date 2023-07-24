@@ -19,13 +19,6 @@ final class LoadingManager: Loading {
     
     // MARK: Properties
     static let shared: LoadingManager = .init()
-    enum Constants {
-        static let cornerRadius = 8.0
-        static let loadingViewWidth = 74.0
-        static let loadingViewHeight = 74.0
-        static let activtyIndicatorWidth = 66.0
-        static let activtyIndicatorHeight = 66.0
-    }
     
     // MARK: Init
     private init() { }
@@ -41,9 +34,19 @@ final class LoadingManager: Loading {
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView()
         activityIndicator.style = .large
-        activityIndicator.color = .customTextColor
+        activityIndicator.color = .customLabelColor
         return activityIndicator
     }()
+}
+
+extension LoadingManager {
+    enum Constants {
+        static let cornerRadius = 8.0
+        static let loadingViewWidth = 74.0
+        static let loadingViewHeight = 74.0
+        static let activtyIndicatorWidth = 66.0
+        static let activtyIndicatorHeight = 66.0
+    }
 }
 
 // MARK: - Helpers
@@ -66,7 +69,7 @@ extension LoadingManager {
         DispatchQueue.main.async {
             if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
                 DispatchQueue.main.async {[weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.loadingView.removeFromSuperview()
                     window.isUserInteractionEnabled = true
                 }

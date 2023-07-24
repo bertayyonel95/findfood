@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CityNameFetchable {
-    func retrieveByCityName(request: CityNameRequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void)
+    func retrieveByCityName(request: CityNameRequest, completion: @escaping (Result<Business, APIError>) -> Void)
 }
 
 final class CityNameAPI: CityNameFetchable {
@@ -18,7 +18,7 @@ final class CityNameAPI: CityNameFetchable {
         self.networkManager = networkManager
     }
     
-    func retrieveByCityName(request: CityNameRequestModel, completion: @escaping (Result<[LocationModel], APIError>) -> Void) {
+    func retrieveByCityName(request: CityNameRequest, completion: @escaping (Result<Business, APIError>) -> Void) {
         networkManager.request(request: request, completion: completion)
     }
 }

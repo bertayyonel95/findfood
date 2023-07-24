@@ -19,7 +19,6 @@ class UserDefaultsManager: ObjectSaveable {
     /// Sets an object to the UserDefaults.
     func setObject<Object>(_ object: Object, forKey: String) throws where Object : Encodable {
         let encoder = JSONEncoder()
-        
         do {
             let data = try encoder.encode(object)
             UserDefaults.standard.set(data,forKey: forKey)
@@ -40,6 +39,4 @@ class UserDefaultsManager: ObjectSaveable {
             throw ObjectSaveableError.unableToDecode
         }
     }
-    
-    
 }

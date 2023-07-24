@@ -11,12 +11,14 @@ class SlideInPresentationController: UIPresentationController {
     // MARK: Properties
     private var direction: PresentationDirection
     private var dimmingView: UIView!
+    
     // MARK: init
     init(presentedViewController: UIViewController, presentingViewController: UIViewController?, direction: PresentationDirection) {
         self.direction = direction
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         setupDimmingView()
     }
+    
     // MARK: Helpers
     /// Prepares for the beginning of a transition.
     override func presentationTransitionWillBegin() {

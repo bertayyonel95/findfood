@@ -8,7 +8,7 @@
 import Foundation
 
 protocol LocationIDFetchable {
-    func retrieveByLocationID(request: LocationIDRequestModel, completion: @escaping (Result<LocationModel, APIError>) -> Void)
+    func retrieveByLocationID(request: LocationIDRequest, completion: @escaping (Result<Location, APIError>) -> Void)
 }
 
 final class LocationIDAPI: LocationIDFetchable {
@@ -18,7 +18,7 @@ final class LocationIDAPI: LocationIDFetchable {
         self.networkManager = networkManager
     }
     
-    func retrieveByLocationID(request: LocationIDRequestModel, completion: @escaping (Result<LocationModel, APIError>) -> Void) {
+    func retrieveByLocationID(request: LocationIDRequest, completion: @escaping (Result<Location, APIError>) -> Void) {
         networkManager.requestWithLocationID(request: request, completion: completion)
     }
 }

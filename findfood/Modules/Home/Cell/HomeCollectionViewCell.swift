@@ -40,20 +40,20 @@ final class HomeCollectionViewCell: UICollectionViewCell {
         name.font = name.font.withSize(19)
         name.numberOfLines = 0
         name.lineBreakMode = .byWordWrapping
-        name.textColor = UIColor(named: "CustomLabel")
+        name.textColor = .customLabelColor
         return name
     }()
     
     private let rating: UILabel = {
         let rating = UILabel(frame: .zero)
-        rating.textColor = UIColor(named: "CustomLabel")
+        rating.textColor = .customLabelColor
         return rating
     }()
     
     private let price: UILabel = {
         let price = UILabel(frame: .zero)
         price.font = price.font.withSize(16)
-        price.textColor = UIColor(named: "CustomLabel")
+        price.textColor = .customLabelColor
         return price
     }()
     
@@ -100,15 +100,14 @@ final class HomeCollectionViewCell: UICollectionViewCell {
             lastVisited.text = Constant.MessageString.lastVisitedOn + viewModel.lastVisited
             lastVisited.isEnabled = true
         }
-        
     }
 }
 
-//MARK: - Helpers
+// MARK: - Helpers
 private extension HomeCollectionViewCell {
     @objc
     func likeButtonPressed() {
-        guard var viewModel = viewModel else { return }
+        guard let viewModel else { return }
         if FirebaseManager.shared.userExists() {
             setupLikeButton(with: !viewModel.isLiked)
         }
@@ -120,7 +119,7 @@ private extension HomeCollectionViewCell {
     }
     
     func setupView() {
-        self.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        self.backgroundColor = .customSecondaryBackgroundColor
         self.layer.cornerRadius = 8.0
         
         self.layer.masksToBounds = false

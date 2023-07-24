@@ -10,17 +10,29 @@ import Foundation
 
 struct Business: Decodable {
     let businesses: [LocationData]
+    let total: Int
 }
 
 struct LocationData: Decodable {
     let id: String
     let name: String?
-    let image_url: String?
+    let imageUrl: String?
     let rating: Double?
     let categories: [LocationCategory]?
     let price: String?
-    let display_phone: String?
+    let displayPhone: String?
     let location: LocationAddress?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case imageUrl = "image_url"
+        case rating
+        case categories
+        case price
+        case displayPhone = "display_phone"
+        case location
+    }
 }
 
 struct LocationCategory: Decodable {
@@ -29,5 +41,9 @@ struct LocationCategory: Decodable {
 }
 
 struct LocationAddress: Decodable {
-    let display_address: [String]?
+    let displayAddress: [String]?
+    
+    enum CodingKeys: String, CodingKey {
+        case displayAddress = "display_address"
+    }
 }

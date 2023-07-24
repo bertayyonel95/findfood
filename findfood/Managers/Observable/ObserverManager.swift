@@ -10,7 +10,7 @@ import Foundation
 final class ObserverManager {
     // MARK: Properties
     var favouriteStatusChanged: Observable<Bool> = .init(false)
-    var favouritesClicked: Observable<Bool> = .init(false)
+    var favouritesPressed: Observable<Bool> = .init(false)
     // MARK: init
     private init() {
     }

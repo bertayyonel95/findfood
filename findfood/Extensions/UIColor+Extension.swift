@@ -9,18 +9,14 @@ import UIKit
 
 extension UIColor {
     static var customBackgroundColor: UIColor {
-        return UIColor { (traits) -> UIColor in
-            return traits.userInterfaceStyle == .dark ?
-            .black :
-            .white
-        }
+        UIColor(named: "CustomBackground") ?? .white
     }
     
-    static var customTextColor: UIColor {
-        return UIColor { (traits) -> UIColor in
-            return traits.userInterfaceStyle == .dark ?
-            .white :
-            .black
-        }
+    static var customLabelColor: UIColor {
+        UIColor(named: "CustomLabel") ?? .black
+    }
+    
+    static var customSecondaryBackgroundColor: UIColor {
+        UIColor(named: "CustomSecondaryBackground") ?? .gray
     }
 }

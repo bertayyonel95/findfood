@@ -17,15 +17,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         FirebaseApp.configure()
         
-        let networkManager = NetworkManager(session: .shared)
-        let cityNameAPI = CityNameAPI(networkManager: networkManager)
-        let coordinateAPI = CoordinateAPI(networkManager: networkManager)
-        let locationIDAPI = LocationIDAPI(networkManager: networkManager)
-        
-        let geoLocationManager = GeoLocationManager()
-
-        let homeViewModel = HomeViewModel(cityNameAPI: cityNameAPI, coordinateAPI: coordinateAPI, geoLocationManager: geoLocationManager, locationIDAPI: locationIDAPI)
-        let homeController = HomeController(viewModel: homeViewModel)
+//        let networkManager = NetworkManager(session: .shared)
+//        let cityNameAPI = CityNameAPI(networkManager: networkManager)
+//        let coordinateAPI = CoordinateAPI(networkManager: networkManager)
+//        let locationIDAPI = LocationIDAPI(networkManager: networkManager)
+//
+//        let geoLocationManager = GeoLocationManager()
+//
+//        let homeViewModel = HomeViewModel(cityNameAPI: cityNameAPI, coordinateAPI: coordinateAPI, geoLocationManager: geoLocationManager, locationIDAPI: locationIDAPI)
+        let homeController = HomeBuilder.build()
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene

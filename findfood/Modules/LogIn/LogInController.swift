@@ -24,14 +24,14 @@ class LogInController: UIViewController {
         emailField.layer.cornerRadius = 8.0
         emailField.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
         emailField.layer.borderWidth = 1.0
-        emailField.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        emailField.backgroundColor = .customSecondaryBackgroundColor
         emailField.placeholder = Constant.ViewText.emailFieldPlaceHolder
         return emailField
     }()
     
     private lazy var passwordField: UITextField = {
         let passwordField = UITextField(frame: .zero)
-        passwordField.backgroundColor = UIColor(named: "CustomSecondaryBackground")
+        passwordField.backgroundColor = .customSecondaryBackgroundColor
         passwordField.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
         passwordField.layer.borderWidth = 1.0
         passwordField.setLeftPaddingPoints(2.0)
@@ -40,17 +40,17 @@ class LogInController: UIViewController {
         passwordField.autocorrectionType = .no
         passwordField.isSecureTextEntry = true
         passwordField.layer.cornerRadius = 8.0
-        passwordField.backgroundColor =  UIColor(named: "CustomSecondaryBackground")
+        passwordField.backgroundColor =  .customSecondaryBackgroundColor
         passwordField.placeholder = Constant.ViewText.passwordFieldPlaceHolder
         return passwordField
     }()
     
     private lazy var loginButton: UIButton = {
         let loginButton = UIButton(frame: .zero)
-        loginButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
-        loginButton.addTarget(self, action: #selector(loginClicked), for: .touchUpInside)
+        loginButton.backgroundColor = .customSecondaryBackgroundColor
+        loginButton.addTarget(self, action: #selector(loginPressed), for: .touchUpInside)
         loginButton.setTitle(Constant.ViewText.logInTitle, for: .normal)
-        loginButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        loginButton.setTitleColor(.customLabelColor, for: .normal)
         loginButton.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
         loginButton.layer.borderWidth = 1.0
         loginButton.layer.cornerRadius = 8.0
@@ -59,10 +59,10 @@ class LogInController: UIViewController {
     
     private lazy var signupButton: UIButton = {
         let signupButton = UIButton(frame: .zero)
-        signupButton.backgroundColor = UIColor(named: "CustomSecondaryBackground")
-        signupButton.addTarget(self, action: #selector(signupClicked), for: .touchUpInside)
+        signupButton.backgroundColor = .customSecondaryBackgroundColor
+        signupButton.addTarget(self, action: #selector(signupPressed), for: .touchUpInside)
         signupButton.setTitle(Constant.ViewText.signUpTitle, for: .normal)
-        signupButton.setTitleColor(UIColor(named: "CustomLabel"), for: .normal)
+        signupButton.setTitleColor(.customLabelColor, for: .normal)
         signupButton.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
         signupButton.layer.borderWidth = 1.0
         signupButton.layer.cornerRadius = 5.0
@@ -93,7 +93,7 @@ class LogInController: UIViewController {
 private extension LogInController {
     // MARK: Helpers
     func setupView() {
-        view.backgroundColor = UIColor(named: "CustomBackground")
+        view.backgroundColor = .customBackgroundColor
         view.layer.cornerRadius = 18.0
         view.addSubview(emailField)
         view.addSubview(passwordField)
@@ -139,12 +139,12 @@ private extension LogInController {
         )
     }
     
-    @objc func loginClicked() {
+    @objc func loginPressed() {
         viewModel.logInUser(email: emailField.text ?? .empty, password: passwordField.text ?? .empty)
         self.view.endEditing(true)
     }
     
-    @objc func signupClicked() {
+    @objc func signupPressed() {
         viewModel.registerUser(email: emailField.text ?? .empty, password: passwordField.text ?? .empty)
         self.view.endEditing(true)
     }

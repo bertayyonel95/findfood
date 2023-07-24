@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-struct GeoLocationModel {
+struct GeoLocation {
     let lat: CLLocationDegrees
     let lon: CLLocationDegrees
 }

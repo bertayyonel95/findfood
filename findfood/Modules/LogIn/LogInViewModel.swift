@@ -4,6 +4,7 @@
 //
 //  Created by Bertay Yönel on 18.03.2023.
 //
+// swiftlint:disable identifier_name
 
 import Foundation
 // MARK: - LoginViewModelInput
@@ -38,15 +39,11 @@ final class LoginViewModel: LoginViewModelInput {
 }
 // MARK: - FirebaseAuthManagerDelegate
 extension LoginViewModel: FirebaseAuthManagerDelegate {
-    func onError(errorMessage: String) {
-        self.output?.showErrorMessage(errorMessage: errorMessage)
-    }
-    
-    func onSuccessfulLogIn() {
-        self.output?.popController()
-    }
-    
-    func onSuccessfulSingUp() {
-        self.output?.popController()
+    func Firebase(_ manager: FirebaseManager, didCompleteWith: Bool, error: Error?) {
+        if error != nil {
+            self.output?.showErrorMessage(errorMessage: error?.localizedDescription ?? .empty)
+            return
+        }
+        output?.popController()
     }
 }

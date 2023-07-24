@@ -7,9 +7,10 @@
 
 import Foundation
 
-final class CityNameRequestModel: RequestModel {
+final class CityNameRequest: RequestModel {
     // MARK: - Properties
     private let cityName: String
+    
     init(cityName: String) {
         self.cityName = cityName
     }

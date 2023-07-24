@@ -7,7 +7,7 @@
 // swiftlint:disable identifier_name
 import Foundation
 
-struct LocationModel {
+struct Location {
     // MARK: Properties
     let locationID: String
     let locationName: String
@@ -18,24 +18,20 @@ struct LocationModel {
     let display_phone: String
     let display_address: [String]
     var locationImageURL: URL? {
-        if let locationImageURL = URL(string: locatinImageLink) {
-            return locationImageURL
-        } else {
-            return nil
-        }
+        URL(string: locatinImageLink)
     }
 }
 
-extension LocationModel {
+extension Location {
     // MARK: init
     init(with locationData: LocationData) {
         self.locationID = locationData.id
         self.locationName = locationData.name ?? .empty
         self.locationRating = String(locationData.rating ?? .zero)
-        self.locatinImageLink = locationData.image_url ?? .empty
+        self.locatinImageLink = locationData.imageUrl ?? .empty
         self.locationPrice = locationData.price ?? .empty
         self.locationCategories = locationData.categories ?? []
-        self.display_phone = locationData.display_phone ?? .empty
-        self.display_address = locationData.location?.display_address ?? []
+        self.display_phone = locationData.displayPhone ?? .empty
+        self.display_address = locationData.location?.displayAddress ?? []
     }
 }
