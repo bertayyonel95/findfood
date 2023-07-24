@@ -7,7 +7,7 @@ Findfood is a location based search applications focused on finding restaurants/
 * Time and date of last viewing of a location
 
 # Decisions
-* MVVM Desing pattern is at the core of application
+* MVVM Desing pattern is at the core of the application
 * Dependency Injection is used to make the classes more modular and prone to easier testing
 * UI is programmatically developed
 * Managers are utilized for Networking, Loading, Observers, Alerts etc.
