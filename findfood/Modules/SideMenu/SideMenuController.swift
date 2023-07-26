@@ -9,7 +9,7 @@ import UIKit
 // MARK: - SideMenuController
 class SideMenuController: UIViewController {
     // MARK: Properties
-    private var loginRouter: LoginRouting = LoginRouter()
+    private var viewModel: SideMenuViewModelInput
     lazy var slideInPresentationManager = SlideInPresentationManager()
     // MARK: Views
     private lazy var containerView: UIView = {
@@ -44,7 +44,8 @@ class SideMenuController: UIViewController {
         setupView()
     }
     // MARK: init
-    init() {
+    init(viewModel: SideMenuViewModelInput) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: .main)
         navigationItem.title = Constant.ViewText.logInTitle
     }
@@ -85,7 +86,7 @@ private extension SideMenuController {
     }
     
     @objc func loginPressed() {
-        loginRouter.navigateToLogin(self)
+        viewModel.loginPressed()
     }
     
     @objc func logoutPressed() {

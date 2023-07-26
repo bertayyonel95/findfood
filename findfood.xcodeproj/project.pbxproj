@@ -68,11 +68,13 @@
 		ABF63F832966F782007447C8 /* DetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F822966F782007447C8 /* DetailController.swift */; };
 		ABF63F88296839DF007447C8 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF63F87296839DF007447C8 /* HomeViewModel.swift */; };
 		ABFAB12A2A6BD42D0090BA4C /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1292A6BD42D0090BA4C /* UITextField+Extension.swift */; };
-		ABFAB12F2A6BFAD40090BA4C /* ParseJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB12E2A6BFAD40090BA4C /* ParseJSON.swift */; };
-		ABFAB1322A6BFB530090BA4C /* JSONParsingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1312A6BFB530090BA4C /* JSONParsingError.swift */; };
-		ABFAB1342A6DD7150090BA4C /* LoginRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1332A6DD7150090BA4C /* LoginRouter.swift */; };
 		ABFAB1362A6DDCC70090BA4C /* HomeBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1352A6DDCC70090BA4C /* HomeBuilder.swift */; };
 		ABFAB1392A6DDDAF0090BA4C /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1382A6DDDAF0090BA4C /* DependencyContainer.swift */; };
+		ABFAB13B2A7000CB0090BA4C /* HomeRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB13A2A7000CB0090BA4C /* HomeRouter.swift */; };
+		ABFAB13D2A7001100090BA4C /* LoginBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB13C2A7001100090BA4C /* LoginBuilder.swift */; };
+		ABFAB13F2A7005870090BA4C /* SideMenuBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB13E2A7005870090BA4C /* SideMenuBuilder.swift */; };
+		ABFAB1412A712B030090BA4C /* SideMenuRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1402A712B030090BA4C /* SideMenuRouter.swift */; };
+		ABFAB1432A712B8C0090BA4C /* SideMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAB1422A712B8C0090BA4C /* SideMenuViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -135,11 +137,13 @@
 		ABF63F822966F782007447C8 /* DetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailController.swift; sourceTree = "<group>"; };
 		ABF63F87296839DF007447C8 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		ABFAB1292A6BD42D0090BA4C /* UITextField+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extension.swift"; sourceTree = "<group>"; };
-		ABFAB12E2A6BFAD40090BA4C /* ParseJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseJSON.swift; sourceTree = "<group>"; };
-		ABFAB1312A6BFB530090BA4C /* JSONParsingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParsingError.swift; sourceTree = "<group>"; };
-		ABFAB1332A6DD7150090BA4C /* LoginRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginRouter.swift; sourceTree = "<group>"; };
 		ABFAB1352A6DDCC70090BA4C /* HomeBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeBuilder.swift; sourceTree = "<group>"; };
 		ABFAB1382A6DDDAF0090BA4C /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
+		ABFAB13A2A7000CB0090BA4C /* HomeRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRouter.swift; sourceTree = "<group>"; };
+		ABFAB13C2A7001100090BA4C /* LoginBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginBuilder.swift; sourceTree = "<group>"; };
+		ABFAB13E2A7005870090BA4C /* SideMenuBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuBuilder.swift; sourceTree = "<group>"; };
+		ABFAB1402A712B030090BA4C /* SideMenuRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuRouter.swift; sourceTree = "<group>"; };
+		ABFAB1422A712B8C0090BA4C /* SideMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideMenuViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,10 +331,11 @@
 		AB9045E2294752650056C36F /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				ABFAB1352A6DDCC70090BA4C /* HomeBuilder.swift */,
 				AB9045C829471C5D0056C36F /* HomeController.swift */,
+				ABFAB13A2A7000CB0090BA4C /* HomeRouter.swift */,
 				ABF63F87296839DF007447C8 /* HomeViewModel.swift */,
 				AB9045E3294756CA0056C36F /* Cell */,
-				ABFAB1352A6DDCC70090BA4C /* HomeBuilder.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -404,7 +409,7 @@
 			children = (
 				ABF1829629C5F2F200DB650B /* LogInController.swift */,
 				ABF1829829C5F31E00DB650B /* LogInViewModel.swift */,
-				ABFAB1332A6DD7150090BA4C /* LoginRouter.swift */,
+				ABFAB13C2A7001100090BA4C /* LoginBuilder.swift */,
 			);
 			path = LogIn;
 			sourceTree = "<group>";
@@ -413,6 +418,9 @@
 			isa = PBXGroup;
 			children = (
 				ABF1829B29C5F5CC00DB650B /* SideMenuController.swift */,
+				ABFAB13E2A7005870090BA4C /* SideMenuBuilder.swift */,
+				ABFAB1402A712B030090BA4C /* SideMenuRouter.swift */,
+				ABFAB1422A712B8C0090BA4C /* SideMenuViewModel.swift */,
 			);
 			path = SideMenu;
 			sourceTree = "<group>";
@@ -429,7 +437,6 @@
 			isa = PBXGroup;
 			children = (
 				ABFAB1372A6DDD880090BA4C /* DependencyContainer */,
-				ABFAB1302A6BFB400090BA4C /* ParseJson */,
 				AB45D50F29813EEE005DB576 /* Network */,
 				ABF63F7C29658DB7007447C8 /* Constants */,
 			);
@@ -464,15 +471,6 @@
 				AB9045EB2948AB940056C36F /* LocationData.swift */,
 			);
 			path = Response;
-			sourceTree = "<group>";
-		};
-		ABFAB1302A6BFB400090BA4C /* ParseJson */ = {
-			isa = PBXGroup;
-			children = (
-				ABFAB12E2A6BFAD40090BA4C /* ParseJSON.swift */,
-				ABFAB1312A6BFB530090BA4C /* JSONParsingError.swift */,
-			);
-			path = ParseJson;
 			sourceTree = "<group>";
 		};
 		ABFAB1372A6DDD880090BA4C /* DependencyContainer */ = {
@@ -587,6 +585,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB9045E729475C550056C36F /* HomeCollectionViewCell.swift in Sources */,
+				ABFAB1432A712B8C0090BA4C /* SideMenuViewModel.swift in Sources */,
 				AB0C86622A5C32BB00AA9017 /* Observer.swift in Sources */,
 				ABA714DF2A2F3C8C002A5531 /* SlideInPresentationAnimator.swift in Sources */,
 				AB0C865A2A580E2000AA9017 /* LoadingManager.swift in Sources */,
@@ -600,7 +599,6 @@
 				AB45D50E297FD835005DB576 /* RequestModel.swift in Sources */,
 				AB594CA229D716EE000990EC /* PresentationDirection.swift in Sources */,
 				ABF63F88296839DF007447C8 /* HomeViewModel.swift in Sources */,
-				ABFAB1342A6DD7150090BA4C /* LoginRouter.swift in Sources */,
 				AB9045C929471C5D0056C36F /* HomeController.swift in Sources */,
 				AB5465DD2A62A33400F9FA5E /* ActionButtonType.swift in Sources */,
 				AB3D49CE29641E7E006DBE9F /* String+Extensions.swift in Sources */,
@@ -614,20 +612,22 @@
 				AB9045C529471C5D0056C36F /* AppDelegate.swift in Sources */,
 				ABB76EE029893C610090B774 /* UserDefaultsManager.swift in Sources */,
 				ABF63F7E29658DCB007447C8 /* Constants.swift in Sources */,
+				ABFAB13D2A7001100090BA4C /* LoginBuilder.swift in Sources */,
 				ABFAB12A2A6BD42D0090BA4C /* UITextField+Extension.swift in Sources */,
 				AB5465D92A607DC600F9FA5E /* LocationIDRequest.swift in Sources */,
 				AB0C865D2A59E4F900AA9017 /* UserMenuViewController.swift in Sources */,
 				ABB981DC2972EA62008095E3 /* GeoLocation.swift in Sources */,
 				AB5465E12A640C0000F9FA5E /* FirebaseString.swift in Sources */,
+				ABFAB13B2A7000CB0090BA4C /* HomeRouter.swift in Sources */,
 				ABF63F8029658E53007447C8 /* API.swift in Sources */,
 				AB9E573529D309C2008BE5AB /* UIViewController+Extension.swift in Sources */,
 				ABB76ED62983BDCC0090B774 /* CoordinateRequest.swift in Sources */,
-				ABFAB1322A6BFB530090BA4C /* JSONParsingError.swift in Sources */,
 				ABD6040329ACC54A006D4342 /* Int+Extension.swift in Sources */,
 				AB99550429CB24A400F2E7C7 /* FirebaseManager.swift in Sources */,
 				AB5D03A02A37231D009C0FE1 /* UIApplicaton+Extension.swift in Sources */,
-				ABFAB12F2A6BFAD40090BA4C /* ParseJSON.swift in Sources */,
+				ABFAB13F2A7005870090BA4C /* SideMenuBuilder.swift in Sources */,
 				AB45D51129813EFB005DB576 /* APIError.swift in Sources */,
+				ABFAB1412A712B030090BA4C /* SideMenuRouter.swift in Sources */,
 				AB5BD4F42A30807100332276 /* UIResponder+Extensions.swift in Sources */,
 				ABFAB1392A6DDDAF0090BA4C /* DependencyContainer.swift in Sources */,
 				ABF1829929C5F31E00DB650B /* LogInViewModel.swift in Sources */,

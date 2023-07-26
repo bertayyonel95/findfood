@@ -24,6 +24,7 @@ class GeoLocationManager: NSObject {
         super.init()
         
         locationManager = CLLocationManager()
+        locationManager?.desiredAccuracy = kCLLocationAccuracyThreeKilometers
         locationManager?.delegate = self
     }
 }

@@ -12,6 +12,7 @@ class RequestModel {
     // MARK: Properties
     var offset = 0
     var limit = 20
+    var locationID: String = .empty
     var path: String {
         .empty
     }

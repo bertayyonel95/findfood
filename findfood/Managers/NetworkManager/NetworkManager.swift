@@ -26,9 +26,13 @@ class NetworkManager: Networking {
     /// - Parameters:
     ///    - request: request model to be used to make a network request.
     func request<T: Decodable>(request: RequestModel, completion: @escaping (Result<T, APIError>) -> Void) {
-        guard let generatedRequest = request.generateRequest() else { return }
-        let parser = ParseJSON<T>()
-        let task = session.dataTask(with: generatedRequest) { data, response, error in
+        var generatedRequest: URLRequest?
+        if !request.locationID.isEmpty {
+            generatedRequest = request.generateRequest(with: request.locationID)
+        } else {
+            generatedRequest = request.generateRequest()
+        }
+        let task = session.dataTask(with: generatedRequest!) { data, response, error in
             if let error {
                 completion(.failure(.unknownError))
             }
@@ -37,7 +41,7 @@ class NetworkManager: Networking {
                 return
             }
             do {
-                let convertedData = try parser.parseJSON(data: data)
+                let convertedData = try JSONDecoder().decode(T.self, from: data)
                 completion(.success(convertedData))
             } catch {
                 completion(.failure(.unknownError))

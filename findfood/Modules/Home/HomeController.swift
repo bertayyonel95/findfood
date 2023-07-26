@@ -20,16 +20,6 @@ final class HomeController: UIViewController {
     private lazy var slideInTransitioningDelegate = SlideInPresentationManager()
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
-    private var loginRouter: LoginRouting = LoginRouter()
-    private var page: Int
-    private var isSlideMenuPresented = false
-    private enum LastRequest {
-        case byLocation
-        case bySearch
-        case byFavourite
-    }
-    private var likedLocations: [String] = []
-    private var lastRequest: LastRequest = LastRequest.byLocation
     private lazy var slideInMenuPadding: CGFloat = self.view.frame.width * 0.30
     
     // MARK: Views
@@ -85,7 +75,6 @@ final class HomeController: UIViewController {
     // MARK: init
     init(viewModel: HomeViewModelInput) {
         self.viewModel = viewModel
-        self.page = 0
         super.init(nibName: nil, bundle: .main)
         self.viewModel.output = self
         setupObservables()
@@ -185,26 +174,15 @@ private extension HomeController {
     
     @objc
     func searchPressed() {
-        page = .zero
-        lastRequest = LastRequest.bySearch
         SDImageCache.shared.clearMemory()
         SDImageCache.shared.clearDisk()
-        viewModel.getBusinessList(for: searchBar.text ?? .empty, at: page)
+        viewModel.searchPreseed(with: searchBar.text ?? .empty)
         collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
     
     @objc
     func popUpMenu() {
-        var sideMenuVC: UIViewController
-        if FirebaseManager.shared.userExists() {
-            sideMenuVC = UserMenuViewController()
-        } else {
-            sideMenuVC = SideMenuController()
-        }
-        slideInTransitioningDelegate.direction = .left
-        sideMenuVC.transitioningDelegate = slideInTransitioningDelegate
-        sideMenuVC.modalPresentationStyle = .custom
-        self.present(sideMenuVC, animated: true, completion: nil)
+        viewModel.popUpMenuPressed()
     }
     
     @objc
@@ -213,8 +191,7 @@ private extension HomeController {
     }
     
     func favouritesPressed() {
-        lastRequest = .byFavourite
-        viewModel.getBusinessListWithFavourites(favouriteLocations: FirebaseManager.shared.returnLikedLocations())
+        viewModel.favouritesPressed()
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }
@@ -237,19 +214,18 @@ extension HomeController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        
-        if viewModel.isLoadingData { return }
-
         if indexPath[0] + 6 == viewModel.getDataSize() {
-            page += 1
-            switch lastRequest {
-            case .bySearch:
-                viewModel.getBusinessList(for: searchBar.text ?? .empty, at: page)
-            case .byLocation:
-                viewModel.getBusinessListWithLocation(at: page)
-            case .byFavourite:
-                return
-            }
+            viewModel.increasePage()
+            viewModel.fetchNextPage(with: searchBar.text ?? .empty)
+//            page += 1
+//            switch lastRequest {
+//            case .bySearch:
+//                viewModel.getBusinessList(for: searchBar.text ?? .empty, at: page)
+//            case .byLocation:
+//                viewModel.getBusinessListWithLocation(at: page)
+//            case .byFavourite:
+//                return
+//            }
         }
     }
 }
@@ -306,9 +282,7 @@ extension HomeController: UISearchBarDelegate {
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        lastRequest = LastRequest.byLocation
-        page = .zero
-        viewModel.getLocationData()
+        viewModel.bookmarkPressed()
         collectionView.setContentOffset(CGPoint.zero, animated: true)
     }
 }
@@ -336,7 +310,7 @@ extension HomeController: HomeCollectionViewCellViewDelegate {
 //                loginVC.transitioningDelegate = self.slideInTransitioningDelegate
 //                loginVC.modalPresentationStyle = .custom
 //                self.present(loginVC, animated: true, completion: nil)
-                self.loginRouter.navigateToLogin(self)
+                self.viewModel.needsToLogin()
             }
         }
     }

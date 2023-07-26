@@ -11,10 +11,6 @@ class DependencyContainer {
     static let shared = DependencyContainer()
     private init() {}
     
-    func loginRouter() -> LoginRouting {
-        return LoginRouter()
-    }
-    
     func networkManager() -> Networking {
         return NetworkManager(session: .shared)
     }

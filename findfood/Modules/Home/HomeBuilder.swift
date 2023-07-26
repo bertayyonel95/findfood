@@ -10,12 +10,16 @@ import Foundation
 class HomeBuilder {
     static func build() -> HomeController {
         let dependencyContainer = DependencyContainer.shared
+        let homeRouter = HomeRouter()
         let homeViewModel = HomeViewModel(
             cityNameAPI: dependencyContainer.cityNameAPI(),
             coordinateAPI: dependencyContainer.coordinateAPI(),
             geoLocationManager: dependencyContainer.geoLocationManager(),
-            locationIDAPI: dependencyContainer.locationIDAPI()
+            locationIDAPI: dependencyContainer.locationIDAPI(),
+            homeRouter: homeRouter
         )
-        return HomeController(viewModel: homeViewModel)
+        let homeController = HomeController(viewModel: homeViewModel)
+        homeRouter.homeController = homeController
+        return homeController
     }
 }

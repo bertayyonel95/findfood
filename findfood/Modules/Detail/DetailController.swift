@@ -31,10 +31,19 @@ final class DetailController: UIViewController {
         return nameLabel
     }()
     
-    private var phoneLabel: UILabel = {
+    private lazy var phoneLabel: UILabel = {
         let phoneLabel = UILabel()
-        phoneLabel.textColor = .customLabelColor
+        phoneLabel.textColor = .blue
+        phoneLabel.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(phoneNumberTapped))
+        phoneLabel.addGestureRecognizer(tapGesture)
         return phoneLabel
+    }()
+    
+    private var phoneTitleLabel: UILabel = {
+       let phoneTitleLabel = UILabel()
+        phoneTitleLabel.textColor = .customLabelColor
+        return phoneTitleLabel
     }()
     
     private var addressLabel: UILabel = {
@@ -67,13 +76,24 @@ final class DetailController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    @objc func phoneNumberTapped() {
+        let phoneString = "tel://\(phoneLabel.text?.filter{ !$0.isWhitespace } ?? .empty)"
+        if let phoneNumber = URL(string: phoneString) {
+            if UIApplication.shared.canOpenURL(phoneNumber) {
+                UIApplication.shared.open(phoneNumber)
+            }
+        }
+        
+    }
 }
 
 private extension DetailController {
     // MARK: Helpers
     func configure(with viewModel: HomeCollectionViewCellViewModel) {
         nameLabel.text = Constant.ViewText.nameLabel + viewModel.name
-        phoneLabel.text = Constant.ViewText.phoneLabel + viewModel.phone
+        phoneTitleLabel.text = "Phone: "
+        phoneLabel.text = viewModel.phone
         addressLabel.text = "\(viewModel.address.joined(separator: ", "))"
         imageView.sd_setImage(with: URL(string: viewModel.image_url))
         
@@ -88,6 +108,7 @@ private extension DetailController {
         scrollView.addSubview(phoneLabel)
         scrollView.addSubview(addressTitle)
         scrollView.addSubview(addressLabel)
+        scrollView.addSubview(phoneTitleLabel)
         
         scrollView.setConstraint(
             top: view.safeAreaLayoutGuide.topAnchor,
@@ -113,22 +134,29 @@ private extension DetailController {
             leadingConstraint: 5
         )
         
-        phoneLabel.setConstraint(
+        phoneTitleLabel.setConstraint(
             top: nameLabel.bottomAnchor,
             leading: scrollView.leadingAnchor,
             topConstraint: 10,
             leadingConstraint: 5
         )
         
+        phoneLabel.setConstraint(
+            top: nameLabel.bottomAnchor,
+            leading: phoneTitleLabel.trailingAnchor,
+            topConstraint: 10,
+            leadingConstraint: 5
+        )
+        
         addressTitle.setConstraint(
-            top: phoneLabel.bottomAnchor,
+            top: phoneTitleLabel.bottomAnchor,
             leading: scrollView.leadingAnchor,
             topConstraint: 10,
             leadingConstraint: 5
         )
         
         addressLabel.setConstraint(
-            top: phoneLabel.bottomAnchor,
+            top: phoneTitleLabel.bottomAnchor,
             leading: addressTitle.trailingAnchor,
             topConstraint: 10,
             leadingConstraint: 0,

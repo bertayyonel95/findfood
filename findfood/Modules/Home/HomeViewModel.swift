@@ -23,6 +23,13 @@ protocol HomeViewModelInput {
     func getBusinessListWithLocation(at page: Int)
     func getBusinessListWithFavourites(favouriteLocations: [String])
     func shouldRequestData(at indexPath: Int, page: Int)
+    func popUpMenuPressed()
+    func needsToLogin()
+    func increasePage()
+    func fetchNextPage(with searchText: String)
+    func favouritesPressed()
+    func bookmarkPressed()
+    func searchPreseed(with searchText: String)
     var isLoadingData: Bool { get set }
 }
 // MARK: - HomeViewModelOutput
@@ -33,9 +40,10 @@ protocol HomeViewModelOutput: AnyObject {
 // MARK: - HomeViewModel
 final class HomeViewModel: HomeViewModelInput  {
     //MARK: Properties
-    private var cityNameAPI: CityNameFetchable
-    private var coordinateAPI: CoordinateFetchable
-    private var locationIDAPI: LocationIDFetchable
+    private let cityNameAPI: CityNameFetchable
+    private let coordinateAPI: CoordinateFetchable
+    private let locationIDAPI: LocationIDFetchable
+    private let homeRouter: HomeRouting
     private var sections: [Section] = []
     private var businessList: [Location] = []
     private var cells: [HomeCollectionViewCellViewModel] = []
@@ -44,16 +52,23 @@ final class HomeViewModel: HomeViewModelInput  {
     private var lon: Double = .zero
     private var lastVisitedDateList: [String:String] = [:]
     private var coordinateRequest: CoordinateRequest = CoordinateRequest(lat: 0, lon: 0)
-    private var reachedEnd = false
+    private var page = 0
+    private enum LastRequest {
+        case byLocation
+        case bySearch
+        case byFavourite
+    }
+    private var lastRequest: LastRequest = LastRequest.byLocation
     
     var isLoadingData: Bool = false
     weak var output: HomeViewModelOutput?
     // MARK: init
-    init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager, locationIDAPI: LocationIDFetchable) {
+    init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager, locationIDAPI: LocationIDFetchable, homeRouter: HomeRouting) {
         self.cityNameAPI = cityNameAPI
         self.coordinateAPI = coordinateAPI
         self.geoLocationManager = geoLocationManager
         self.locationIDAPI = locationIDAPI
+        self.homeRouter = homeRouter
         geoLocationManager.delegate = self
         geoLocationManager.requestAuthorization()
     }
@@ -138,9 +153,11 @@ final class HomeViewModel: HomeViewModelInput  {
         favouriteLocations.forEach { location in
             group.enter()
             self.locationIDAPI.retrieveByLocationID(request: .init(locationID: location)) { [weak self] result in
+                LoadingManager.shared.hide()
                 guard let self = self else { return }
                 switch result {
-                case .success(let locationModel):
+                case .success(let locationData):
+                    let locationModel = Location(with: locationData)
                     self.businessList.insert(locationModel, at: self.businessList.count)
                     group.leave()
                     self.output?.home(self, businessListDidLoad: self.businessList)
@@ -154,6 +171,42 @@ final class HomeViewModel: HomeViewModelInput  {
         group.notify(queue: .main) {
             self.generateCellData()
         }
+    }
+    
+    func increasePage() {
+        page += 1
+    }
+    
+    func resetPage() {
+        page = 0
+    }
+    
+    func fetchNextPage(with searchText: String) {
+        switch lastRequest {
+        case .bySearch:
+            getBusinessList(for: searchText, at: page)
+        case .byLocation:
+            getBusinessListWithLocation(at: page)
+        case .byFavourite:
+            return
+        }
+    }
+    
+    func bookmarkPressed() {
+        lastRequest = LastRequest.byLocation
+        resetPage()
+        getLocationData()
+    }
+    
+    func favouritesPressed() {
+        lastRequest = .byFavourite
+        getBusinessListWithFavourites(favouriteLocations: FirebaseManager.shared.returnLikedLocations())
+    }
+    
+    func searchPreseed(with searchText: String) {
+        resetPage()
+        lastRequest = .bySearch
+        getBusinessList(for: searchText, at: page)
     }
     
     func getLocationData() {
@@ -170,6 +223,18 @@ final class HomeViewModel: HomeViewModelInput  {
     
     func getDataSize() -> Int {
         return sections.count
+    }
+    
+    func popUpMenuPressed() {
+        if FirebaseManager.shared.userExists() {
+            homeRouter.navigateToUserMenu()
+        } else {
+            homeRouter.navigateToSideMenu()
+        }
+    }
+    
+    func needsToLogin() {
+        homeRouter.navigateToLogin()
     }
     
     func likeLocation(with viewModel: HomeCollectionViewCellViewModel) {
