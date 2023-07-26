@@ -18,6 +18,6 @@ Findfood is a location based search applications focused on finding restaurants/
 You don't need any special configuration. Just clone project or download to zip file and run the project.
 
 # Requirements
-* iOS 13+
-* Xcode 13+
-* Swift 5+
+* iOS 13.0+
+* Xcode 14.3.1+
+* Swift 5.8.1+
