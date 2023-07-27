@@ -22,8 +22,5 @@ You don't need any special configuration. Just clone project or download to zip 
 * Xcode 14.3.1+
 * Swift 5.8.1+
 
-
-![Simulator Screenshot - iPhone 14 Pro - 2023-07-27 at 13 07 21](https://github.com/bertayyonel95/findfood/assets/58642825/3b0b31fe-15f5-4997-a508-ffaea924ad32)
-
-<img src="https://github.com/bertayyonel95/findfood/assets/58642825/3b0b31fe-15f5-4997-a508-ffaea924ad32" width=50% height=50%>
-![Simulator Screenshot - iPhone 14 Pro - 2023-07-27 at 13 07 09](https://github.com/bertayyonel95/findfood/assets/58642825/f3653ca8-2b30-4579-96bd-9f1dfa7c26b2)
+<img src="https://github.com/bertayyonel95/findfood/assets/58642825/3b0b31fe-15f5-4997-a508-ffaea924ad32" width=25% height=25%>
+<img src="https://github.com/bertayyonel95/findfood/assets/58642825/f3653ca8-2b30-4579-96bd-9f1dfa7c26b2" width=25% height=25%>
