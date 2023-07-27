@@ -35,7 +35,9 @@ class SideMenuController: UIViewController {
         loginButton.backgroundColor = .customSecondaryBackgroundColor
         loginButton.setTitle(Constant.ViewText.logInTitle, for: .normal)
         loginButton.setTitleColor(.customLabelColor, for: .normal)
-        loginButton.layer.cornerRadius = 8.0
+        loginButton.layer.borderColor = UIColor.gray.cgColor
+        loginButton.layer.borderWidth = 1.0
+        loginButton.layer.cornerRadius = 6.0
         return loginButton
     }()
     // MARK: viewDidLoad
@@ -90,7 +92,7 @@ private extension SideMenuController {
     }
     
     @objc func logoutPressed() {
-        FirebaseManager.shared.userSignOut()
+        FirebaseManager.shared.signOut()
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }

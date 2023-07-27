@@ -40,7 +40,6 @@
 		AB9045E12947433E0056C36F /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045E02947433E0056C36F /* UIView+Extensions.swift */; };
 		AB9045E5294756EC0056C36F /* HomeCollectionViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045E4294756EC0056C36F /* HomeCollectionViewCellViewModel.swift */; };
 		AB9045E729475C550056C36F /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045E629475C550056C36F /* HomeCollectionViewCell.swift */; };
-		AB9045E9294760440056C36F /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045E8294760440056C36F /* UIImageView+Extension.swift */; };
 		AB9045EC2948AB940056C36F /* LocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045EB2948AB940056C36F /* LocationData.swift */; };
 		AB9045EE2948AD070056C36F /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9045ED2948AD070056C36F /* Location.swift */; };
 		AB99550429CB24A400F2E7C7 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB99550329CB24A400F2E7C7 /* FirebaseManager.swift */; };
@@ -109,7 +108,6 @@
 		AB9045E02947433E0056C36F /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		AB9045E4294756EC0056C36F /* HomeCollectionViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCellViewModel.swift; sourceTree = "<group>"; };
 		AB9045E629475C550056C36F /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
-		AB9045E8294760440056C36F /* UIImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
 		AB9045EB2948AB940056C36F /* LocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationData.swift; sourceTree = "<group>"; };
 		AB9045ED2948AD070056C36F /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		AB99550329CB24A400F2E7C7 /* FirebaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
@@ -318,7 +316,6 @@
 				AB3D49CD29641E7E006DBE9F /* String+Extensions.swift */,
 				AB5D039F2A37231D009C0FE1 /* UIApplicaton+Extension.swift */,
 				ABF1829129C1D6B600DB650B /* UIColor+Extension.swift */,
-				AB9045E8294760440056C36F /* UIImageView+Extension.swift */,
 				AB5BD4F32A30807100332276 /* UIResponder+Extensions.swift */,
 				AB9045E02947433E0056C36F /* UIView+Extensions.swift */,
 				AB9E573429D309C2008BE5AB /* UIViewController+Extension.swift */,
@@ -635,7 +632,6 @@
 				AB9045E5294756EC0056C36F /* HomeCollectionViewCellViewModel.swift in Sources */,
 				AB9045EC2948AB940056C36F /* LocationData.swift in Sources */,
 				ABF1829729C5F2F200DB650B /* LogInController.swift in Sources */,
-				AB9045E9294760440056C36F /* UIImageView+Extension.swift in Sources */,
 				AB0C86572A5776DA00AA9017 /* AlertHandler.swift in Sources */,
 				ABF63F832966F782007447C8 /* DetailController.swift in Sources */,
 				AB9045EE2948AD070056C36F /* Location.swift in Sources */,

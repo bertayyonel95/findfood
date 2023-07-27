@@ -10,6 +10,7 @@ import Foundation
 class LoginBuilder {
     static func build() -> LogInController {
         let loginViewModel = LoginViewModel()
-        return LogInController(viewModel: loginViewModel)
+        let loginController = LogInController(viewModel: loginViewModel)
+        return loginController
     }
 }

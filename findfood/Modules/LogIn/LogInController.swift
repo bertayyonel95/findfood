@@ -13,6 +13,17 @@ class LogInController: UIViewController {
     private var viewModel: LoginViewModelInput
     private var keyboardIsPresent: Bool = false
     // MARK: Views
+    private lazy var informativeText: UILabel = {
+        let informativeText = UILabel(frame: .zero)
+        informativeText.text = Constant.ViewText.loginInformative
+        informativeText.numberOfLines = 0
+        informativeText.lineBreakMode = .byWordWrapping
+        informativeText.textAlignment = .center
+        informativeText.font = informativeText.font.withSize(12.0)
+        
+        return informativeText
+    }()
+    
     private lazy var emailField: UITextField = {
         let emailField = UITextField(frame: .zero)
         emailField.backgroundColor = .secondarySystemBackground
@@ -21,8 +32,8 @@ class LogInController: UIViewController {
         emailField.autocapitalizationType = .none
         emailField.autocorrectionType = .no
         emailField.keyboardType = .emailAddress
-        emailField.layer.cornerRadius = 8.0
-        emailField.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        emailField.layer.cornerRadius = 6.0
+        emailField.layer.borderColor = UIColor.gray.cgColor
         emailField.layer.borderWidth = 1.0
         emailField.backgroundColor = .customSecondaryBackgroundColor
         emailField.placeholder = Constant.ViewText.emailFieldPlaceHolder
@@ -32,14 +43,14 @@ class LogInController: UIViewController {
     private lazy var passwordField: UITextField = {
         let passwordField = UITextField(frame: .zero)
         passwordField.backgroundColor = .customSecondaryBackgroundColor
-        passwordField.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        passwordField.layer.borderColor = UIColor.gray.cgColor
         passwordField.layer.borderWidth = 1.0
         passwordField.setLeftPaddingPoints(2.0)
         passwordField.setRightPaddingPoints(2.0)
         passwordField.autocapitalizationType = .none
         passwordField.autocorrectionType = .no
         passwordField.isSecureTextEntry = true
-        passwordField.layer.cornerRadius = 8.0
+        passwordField.layer.cornerRadius = 6.0
         passwordField.backgroundColor =  .customSecondaryBackgroundColor
         passwordField.placeholder = Constant.ViewText.passwordFieldPlaceHolder
         return passwordField
@@ -51,9 +62,9 @@ class LogInController: UIViewController {
         loginButton.addTarget(self, action: #selector(loginPressed), for: .touchUpInside)
         loginButton.setTitle(Constant.ViewText.logInTitle, for: .normal)
         loginButton.setTitleColor(.customLabelColor, for: .normal)
-        loginButton.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        loginButton.layer.borderColor = UIColor.gray.cgColor
         loginButton.layer.borderWidth = 1.0
-        loginButton.layer.cornerRadius = 8.0
+        loginButton.layer.cornerRadius = 6.0
         return loginButton
     }()
     
@@ -63,9 +74,9 @@ class LogInController: UIViewController {
         signupButton.addTarget(self, action: #selector(signupPressed), for: .touchUpInside)
         signupButton.setTitle(Constant.ViewText.signUpTitle, for: .normal)
         signupButton.setTitleColor(.customLabelColor, for: .normal)
-        signupButton.layer.borderColor = UIColor(named: "CustomLabel")?.cgColor
+        signupButton.layer.borderColor = UIColor.gray.cgColor
         signupButton.layer.borderWidth = 1.0
-        signupButton.layer.cornerRadius = 5.0
+        signupButton.layer.cornerRadius = 6.0
         
         return signupButton
     }()
@@ -99,12 +110,22 @@ private extension LogInController {
         view.addSubview(passwordField)
         view.addSubview(loginButton)
         view.addSubview(signupButton)
+        view.addSubview(informativeText)
         
-        emailField.setConstraint(
+        informativeText.setConstraint(
             top: view.safeAreaLayoutGuide.topAnchor,
             leading: view.leadingAnchor,
             trailing: view.trailingAnchor,
-            topConstraint: 120.0,
+            topConstraint: 100.0,
+            leadingConstraint: 25.0,
+            trailingConstraint: 25.0
+        )
+        
+        emailField.setConstraint(
+            top: informativeText.bottomAnchor,
+            leading: view.leadingAnchor,
+            trailing: view.trailingAnchor,
+            topConstraint: 10.0,
             leadingConstraint: 45.0,
             trailingConstraint: 45.0,
             height: 44.0
@@ -114,7 +135,7 @@ private extension LogInController {
             top: emailField.bottomAnchor,
             leading: view.leadingAnchor,
             trailing: view.trailingAnchor,
-            topConstraint: 25.0,
+            topConstraint: 10.0,
             leadingConstraint: 45.0,
             trailingConstraint: 45.0,
             height: 44.0
@@ -122,7 +143,7 @@ private extension LogInController {
 
         loginButton.setConstraint(
             top: passwordField.bottomAnchor,
-            topConstraint: 15.0,
+            topConstraint: 10.0,
             bottomConstraint: 10.0,
             centerX: view.centerXAnchor,
             width: 140.0,
@@ -131,7 +152,7 @@ private extension LogInController {
         
         signupButton.setConstraint(
             top: loginButton.bottomAnchor,
-            topConstraint: 15.0,
+            topConstraint: 10.0,
             bottomConstraint: 10.0,
             centerX: view.centerXAnchor,
             width: 140.0,

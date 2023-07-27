@@ -29,7 +29,6 @@ class FirebaseManager {
     var database = Firestore.firestore()
     var user: User?
     
-    
     // MARK: Init
     private init() {
         if self.userExists() {
@@ -44,7 +43,7 @@ class FirebaseManager {
     /// - Parameters:
     ///    - withEmail: e-mail to be used in the creation of a user.
     ///    - withPassword: password to be used in the creation of a user.
-    func userSignUp(withEmail: String, withPassword: String) {
+    func signUp(withEmail: String, withPassword: String) {
         auth.createUser(withEmail: withEmail, password: withPassword) { authResult, error in
             if error != nil {
                 let errorCode = AuthErrorCode(_nsError: error! as NSError)
@@ -52,7 +51,7 @@ class FirebaseManager {
             } else {
                 self.addUserToDatabase(userID: authResult?.user.uid ?? .empty)
                 self.delegate?.Firebase(self, didCompleteWith: true, error: nil)
-                self.userSignIn(withEmail: withEmail, withPassword: withPassword)
+                self.signIn(withEmail: withEmail, withPassword: withPassword)
                 self.getCurrentUser()
                 self.getFavouritesFromUser()
             }
@@ -64,7 +63,7 @@ class FirebaseManager {
     /// - Parameters:
     ///    - withEmail: e-maill to be used for login.
     ///    - withPassword: password to be used for login.
-    func userSignIn(withEmail email: String, withPassword password: String) {
+    func signIn(withEmail email: String, withPassword password: String) {
         auth.signIn(withEmail: email, password: password) { _, error in
             if error != nil {
                 let nsError = error as? NSError
@@ -79,7 +78,7 @@ class FirebaseManager {
     }
     
     /// Logs the user out.
-    func userSignOut() {
+    func signOut() {
         do {
             try Auth.auth().signOut()
             let observerValue = ObserverManager.shared.favouriteStatusChanged.value

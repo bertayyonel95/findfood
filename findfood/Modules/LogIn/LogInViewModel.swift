@@ -29,11 +29,11 @@ final class LoginViewModel: LoginViewModelInput {
     }
     // MARK: Helpers
     func logInUser(email: String, password: String) {
-        FirebaseManager.shared.userSignIn(withEmail: email, withPassword: password)
+        FirebaseManager.shared.signIn(withEmail: email, withPassword: password)
     }
     
     func registerUser(email: String, password: String) {
-        FirebaseManager.shared.userSignUp(withEmail: email, withPassword: password)
+        FirebaseManager.shared.signUp(withEmail: email, withPassword: password)
     }
     
 }

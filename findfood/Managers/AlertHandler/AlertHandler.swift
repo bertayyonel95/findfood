@@ -34,8 +34,9 @@ extension AlertHandler {
     ///
     /// - Parameters:
     ///    - errorMessage: view controller that the alert will be presented.
-    ///    - title: alert window title to be shown.
-    ///    - actions: UIAlertAction array that adds custom actions to the error message
+    ///    - in: view in which the alert will be shown.
+    ///    - with: title of the alert window.
+    ///    - actionType: an array with possible types of actions. (see ActionButtonType for more deatils)
     func show(errorMessage: String, in viewController: UIViewController, with title: String, actionType: [ActionButtonType]) {
         let alert = UIAlertController(title: title, message: errorMessage, preferredStyle: .alert)
         actionType.forEach { action in
@@ -46,8 +47,6 @@ extension AlertHandler {
             }
             alert.addAction(buttonAction)
         }
-        
-        // Present the alert controller
         viewController.present(alert, animated: true, completion: nil)
     }
 }

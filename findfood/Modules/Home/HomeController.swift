@@ -20,7 +20,6 @@ final class HomeController: UIViewController {
     private lazy var slideInTransitioningDelegate = SlideInPresentationManager()
     private lazy var dataSource = generateDatasource()
     private var snapshot = NSDiffableDataSourceSnapshot<Section, HomeCollectionViewCellViewModel>()
-    private lazy var slideInMenuPadding: CGFloat = self.view.frame.width * 0.30
     
     // MARK: Views
     private lazy var searchBar: UISearchBar = {
@@ -217,15 +216,6 @@ extension HomeController: UICollectionViewDelegate {
         if indexPath[0] + 6 == viewModel.getDataSize() {
             viewModel.increasePage()
             viewModel.fetchNextPage(with: searchBar.text ?? .empty)
-//            page += 1
-//            switch lastRequest {
-//            case .bySearch:
-//                viewModel.getBusinessList(for: searchBar.text ?? .empty, at: page)
-//            case .byLocation:
-//                viewModel.getBusinessListWithLocation(at: page)
-//            case .byFavourite:
-//                return
-//            }
         }
     }
 }
@@ -269,7 +259,7 @@ extension HomeController: HomeViewModelOutput {
 
 // MARK: - UISearchBarDelegate
 extension HomeController: UISearchBarDelegate {
-    func searchBarSearchButtonPressed(_ searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchPressed()
     }
     
@@ -304,12 +294,6 @@ extension HomeController: HomeCollectionViewCellViewDelegate {
                     .cancel
                 ])
             AlertHandler.shared.confirmButtonHandler = {
-//                let loginViewModel = LoginViewModel()
-//                let loginVC = LogInController(viewModel: loginViewModel)
-//                self.slideInTransitioningDelegate.direction = .bottom
-//                loginVC.transitioningDelegate = self.slideInTransitioningDelegate
-//                loginVC.modalPresentationStyle = .custom
-//                self.present(loginVC, animated: true, completion: nil)
                 self.viewModel.needsToLogin()
             }
         }

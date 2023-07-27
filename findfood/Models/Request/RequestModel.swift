@@ -30,8 +30,8 @@ class RequestModel {
     }
 }
 
+// MARK: - Helpers
 extension RequestModel {
-    // MARK: Helpers
     
     /// Generates a request for the network call
     ///

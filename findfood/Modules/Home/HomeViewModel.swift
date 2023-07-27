@@ -22,7 +22,6 @@ protocol HomeViewModelInput {
     func updateLastVisited(with viewModel: HomeCollectionViewCellViewModel)
     func getBusinessListWithLocation(at page: Int)
     func getBusinessListWithFavourites(favouriteLocations: [String])
-    func shouldRequestData(at indexPath: Int, page: Int)
     func popUpMenuPressed()
     func needsToLogin()
     func increasePage()
@@ -30,7 +29,6 @@ protocol HomeViewModelInput {
     func favouritesPressed()
     func bookmarkPressed()
     func searchPreseed(with searchText: String)
-    var isLoadingData: Bool { get set }
 }
 // MARK: - HomeViewModelOutput
 protocol HomeViewModelOutput: AnyObject {
@@ -50,7 +48,7 @@ final class HomeViewModel: HomeViewModelInput  {
     private let geoLocationManager: GeoLocationManager
     private var lat: Double = .zero
     private var lon: Double = .zero
-    private var lastVisitedDateList: [String:String] = [:]
+    private var lastVisitedDateList: [String: String] = [:]
     private var coordinateRequest: CoordinateRequest = CoordinateRequest(lat: 0, lon: 0)
     private var page = 0
     private enum LastRequest {
@@ -59,8 +57,6 @@ final class HomeViewModel: HomeViewModelInput  {
         case byFavourite
     }
     private var lastRequest: LastRequest = LastRequest.byLocation
-    
-    var isLoadingData: Bool = false
     weak var output: HomeViewModelOutput?
     // MARK: init
     init(cityNameAPI: CityNameFetchable, coordinateAPI: CoordinateFetchable, geoLocationManager: GeoLocationManager, locationIDAPI: LocationIDFetchable, homeRouter: HomeRouting) {
@@ -86,12 +82,10 @@ final class HomeViewModel: HomeViewModelInput  {
     ///    - locations: name of the location.
     ///    - page: which page of the data is to be retrieved.
     func getBusinessList(for location: String, at page: Int) {
-        isLoadingData = true
         let requestWithName = CityNameRequest(cityName: location)
         requestWithName.offset = page * requestWithName.limit
         cityNameAPI.retrieveByCityName(request: requestWithName) { [weak self] result in
             guard let self else { return }
-            self.isLoadingData = false
             if page == 0 { self.clearData() }
             switch result {
             case .success(let locationData):
@@ -108,21 +102,14 @@ final class HomeViewModel: HomeViewModelInput  {
         }
     }
     
-    func shouldRequestData(at indexPath: Int, page: Int) {
-        if indexPath + 5 == self.getDataSize() && !isLoadingData {
-            getBusinessListWithLocation(at: page)
-        }
-    }
     /// Populates the business list with the current location
     ///
     /// - Parameters:
     ///    - page: which page of the data is to be retrieved.
     func getBusinessListWithLocation(at page: Int) {
-        isLoadingData = true
         coordinateRequest.offset = page * coordinateRequest.limit
         coordinateAPI.retrieveByCoordinate(request: coordinateRequest) { [weak self] result in
             guard let self else { return }
-            self.isLoadingData = false
             if page == 0 { self.clearData() }
             switch result {
             case .success(let locationData):
@@ -154,7 +141,7 @@ final class HomeViewModel: HomeViewModelInput  {
             group.enter()
             self.locationIDAPI.retrieveByLocationID(request: .init(locationID: location)) { [weak self] result in
                 LoadingManager.shared.hide()
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let locationData):
                     let locationModel = Location(with: locationData)

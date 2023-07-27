@@ -56,7 +56,7 @@ extension LoadingManager {
         DispatchQueue.main.async {
             if let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first {
                 DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     
                     self.setupLoadingView(on: window)
                 }

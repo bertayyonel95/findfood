@@ -31,7 +31,7 @@ class UserMenuViewController: UIViewController {
         logoutButton.addTarget(self, action: #selector(logoutPressed), for: .touchUpInside)
         logoutButton.backgroundColor = .customSecondaryBackgroundColor
         logoutButton.setTitle(Constant.ViewText.logoutTitle, for: .normal)
-        logoutButton.setTitleColor(.customLabelColor, for: .normal)
+        logoutButton.setTitleColor(.red, for: .normal)
         logoutButton.layer.cornerRadius = 8.0
         return logoutButton
     }()
@@ -83,7 +83,7 @@ private extension UserMenuViewController {
     }
     
     @objc func logoutPressed() {
-        FirebaseManager.shared.userSignOut()
+        FirebaseManager.shared.signOut()
         self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
     }
     

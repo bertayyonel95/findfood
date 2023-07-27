@@ -23,5 +23,6 @@ extension Constant {
         static let favouritesTitle = "Favourites"
         static let logoutTitle = "Log Out"
         static let userTitle = "User"
+        static let loginInformative = "You can log in with your pre-existing e-mail and password, or you can sign up by entering an e-mail and a password"
     }
 }

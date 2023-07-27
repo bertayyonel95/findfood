@@ -19,7 +19,7 @@ final class CoordinateRequest: RequestModel {
         self.lat = lat
     }
     
-    override var parameters: [String : Any?] {
+    override var parameters: [String: Any?] {
         var parameters = super.parameters
         parameters["latitude"] = String(format: "%.2f", self.lat)
         parameters["longitude"] = String(format: "%.2f", self.lon)
