@@ -1,5 +1,5 @@
 ## findfood
-Findfood is a location based search applications focused on finding restaurants/fast food places
+Findfood is a location based search application focused on finding restaurants/fast food places
 
 # Key Features
 * Ability to fetch nearby restaurants and cafes.
